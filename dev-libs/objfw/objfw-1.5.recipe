@@ -9,18 +9,18 @@ COPYRIGHT="2008-2025 Jonathan Schleifer"
 LICENSE="GNU LGPL v3"
 REVISION="1"
 SOURCE_URI="https://objfw.nil.im/downloads/objfw-$portVersion.tar.gz"
-CHECKSUM_SHA256="29be5ea5d6a9c34b9873a40091367eb0b75072d627e2508380c02c38cb60ca38"
+CHECKSUM_SHA256="438f18ea760b081bdfcb2b3829c62b8645d241dde08d65a8c004ee4f6b56d9f4"
 
 ARCHITECTURES="all !x86_gcc2"
 SECONDARY_ARCHITECTURES="x86"
 
-libobjfwVersion="1.4.4"
+libobjfwVersion="1.5.0"
 libobjfwVersionCompat="$libobjfwVersion compat >= 1.0"
-libobjfwrtVersion="1.4.4"
+libobjfwrtVersion="1.5.0"
 libobjfwrtVersionCompat="$libobjfwrtVersion compat >= 1.0"
-libobjfwtlsVersion="1.4.4"
+libobjfwtlsVersion="1.5.0"
 libobjfwtlsVersionCompat="$libobjfwrtVersion compat >= 1.0"
-libobjfwhidVersion="1.4.0"
+libobjfwhidVersion="1.5.0"
 libobjfwhidVersionCompat="$libobjfwrtVersion compat >= 1.0"
 
 PROVIDES="objfw$secondaryArchSuffix = $portVersion"
@@ -148,6 +148,7 @@ INSTALL()
 		$binDir/objfw-config $manDir/objfw-config.1 \
 		$binDir/objfw-embed $manDir/objfw-embed.1 \
 		$binDir/objfw-new $manDir/objfw-new.1 \
+		$libDir/cmake/ObjFW \
 		$libDir/objfw-config \
 		$developDir
 }
