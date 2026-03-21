@@ -1,4 +1,4 @@
-From 42aae85e3c8f8357ce0f6385981cd0f55eb7354c Mon Sep 17 00:00:00 2001
+From 038e25a417785385fcc7435307f244c89da3ad91 Mon Sep 17 00:00:00 2001
 From: Gerasim Troeglazov <3dEyes@gmail.com>
 Date: Sun, 16 Apr 2023 11:15:33 +1000
 Subject: Fix build for Haiku
@@ -103,5 +103,5 @@ index b8c53e5..8622613 100644
  #include "ZmqLogger.h"
  
 -- 
-2.37.3
+2.52.0
 
