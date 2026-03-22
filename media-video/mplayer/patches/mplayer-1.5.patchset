@@ -1,4 +1,4 @@
-From 1d6c9eec40b23aa21e58d6e3ec1414900a69de85 Mon Sep 17 00:00:00 2001
+From 84f7e2b81499ac8f2c69a7e35a7ca4b7cecbdc56 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zolt=C3=A1n=20Mizsei?= <zmizsei@extrowerk.com>
 Date: Mon, 22 Apr 2019 11:38:50 +0200
 Subject: Haiku
@@ -1417,5 +1417,5 @@ index e6287d2..e5c4cd9 100644
  	if (filename == NULL) {
  		if ((buff = malloc(len)) == NULL)
 -- 
-2.36.1
+2.52.0
 
