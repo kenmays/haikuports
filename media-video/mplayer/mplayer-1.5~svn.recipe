@@ -23,9 +23,8 @@ HOMEPAGE="https://mplayerhq.hu"
 COPYRIGHT="2000-2026 The MPlayer Team"
 LICENSE="GNU GPL v2"
 REVISION="1"
-SOURCE_URI="https://mplayerhq.hu/MPlayer/releases/mplayer-checkout-snapshot.tar.bz2"
-CHECKSUM_SHA256="63deb1e7ea06ee784f18baf7f987052208d3859f38497a37127c4f31304807f6"
-SOURCE_DIR="mplayer-checkout-2026-04-03"
+SOURCE_URI="svn://svn.mplayerhq.hu/mplayer/trunk#38685"
+SOURCE_DIR=""
 PATCHES="mplayer-$portVersion.patchset"
 ADDITIONAL_FILES="mplayer.rdef.in"
 
@@ -105,6 +104,7 @@ REQUIRES="
 BUILD_REQUIRES="
 	haiku${secondaryArchSuffix}_devel
 	ffmpeg6${secondaryArchSuffix}_devel
+	samba${secondaryArchSuffix}_devel
 	devel:liba52$secondaryArchSuffix
 	devel:libbz2$secondaryArchSuffix
 	devel:libcaca$secondaryArchSuffix
@@ -143,7 +143,6 @@ BUILD_REQUIRES="
 	devel:libpng16$secondaryArchSuffix
 #	devel:libschroedinger_1.0$secondaryArchSuffix
 #	devel:libSDL_1.2$secondaryArchSuffix
-	devel:libsmbclient$secondaryArchSuffix
 	devel:libspeex$secondaryArchSuffix
 #	devel:libssl$secondaryArchSuffix
 	devel:libtheoradec$secondaryArchSuffix
