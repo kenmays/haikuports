@@ -1,0 +1,100 @@
+SUMMARY="Classes for making Qt applications scriptable"
+DESCRIPTION="Qt is a cross-platform application framework that is widely \
+used for developing software with a graphical user interface, and also used \
+for developing non-GUI programs such as command-line tools and consoles for \
+servers."
+HOMEPAGE="https://qt.io/"
+COPYRIGHT="2015-2020 The Qt Company Ltd."
+LICENSE="GNU LGPL v2.1
+	GNU LGPL v3
+	FDL"
+REVISION="1"
+#baseURL="https://download.qt.io/archive/qt/${portVersion%.*}/$portVersion/submodules"
+baseURL="http://qt-mirror.dannhauer.de/archive/qt/${portVersion%.*}/$portVersion/submodules/"
+SOURCE_URI="$baseURL/qtscript-everywhere-opensource-src-$portVersion.tar.xz"
+CHECKSUM_SHA256="1b7ec4a6d47feb5aee1d8cbbea36fc30bf24248220fb1a351ae07ee201bf1a35"
+SOURCE_DIR="qtscript-everywhere-src-$portVersion"
+
+ARCHITECTURES="all !x86_gcc2"
+SECONDARY_ARCHITECTURES="x86"
+
+PROVIDES="
+	qt5_script$secondaryArchSuffix = $portVersion compat >= 5
+	lib:libQt5Script$secondaryArchSuffix = $portVersion compat >= 5
+	lib:libQt5ScriptTools$secondaryArchSuffix = $portVersion compat >= 5
+	"
+
+REQUIRES="
+	haiku$secondaryArchSuffix
+	lib:libgl$secondaryArchSuffix
+	lib:libQt5Core$secondaryArchSuffix == $portVersion
+	lib:libQt5Gui$secondaryArchSuffix == $portVersion
+	lib:libQt5Widgets$secondaryArchSuffix == $portVersion
+	"
+
+PROVIDES_devel="
+	qt5_script${secondaryArchSuffix}_devel = $portVersion compat >= 5
+	devel:libQt5Script$secondaryArchSuffix = $portVersion compat >= 5
+	devel:libQt5ScriptTools$secondaryArchSuffix = $portVersion compat >= 5
+	"
+REQUIRES_devel="
+	qt5_script$secondaryArchSuffix == $portVersion base
+	haiku$secondaryArchSuffix
+	devel:libQt5Core$secondaryArchSuffix == $portVersion
+	devel:libQt5Gui$secondaryArchSuffix == $portVersion
+	devel:libQt5Widgets$secondaryArchSuffix == $portVersion
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	devel:libQt5Core$secondaryArchSuffix == $portVersion
+	devel:libQt5Gui$secondaryArchSuffix == $portVersion
+	devel:libQt5Widgets$secondaryArchSuffix == $portVersion
+	"
+
+BUILD_PREREQUIRES="
+	cmd:g++$secondaryArchSuffix
+	cmd:make
+	cmd:perl
+	cmd:qmake
+	"
+
+defineDebugInfoPackage qt5$secondaryArchSuffix \
+	"$libDir"/libQt5Script.so.$portVersion \
+	"$libDir"/libQt5ScriptTools.so.$portVersion
+
+BUILD()
+{
+	mkdir -p build && cd build
+	qmake .. CONFIG-=-lctg
+	
+	make $jobArgs
+}
+
+INSTALL()
+{
+	make -C build install INSTALL_ROOT=$prefix
+
+	# move everything in place
+	mkdir -p $includeDir $libDir $dataDir
+	mv $prefix/boot/system/develop/headers/* $includeDir/
+	mv $prefix/boot/system/lib/* $libDir/
+	mv $prefix/boot/system/data/* $dataDir/
+	rm -rf $prefix/boot
+	rm $libDir/*.la
+
+	fixPkgconfig
+
+	prepareInstalledDevelLibs \
+		libQt5Script libQt5ScriptTools
+
+	cd $libDir
+	for i in lib*.so.5.*;do
+		ln -fs $i $(echo $i | cut -f1,2 -d.)
+	done
+
+	packageEntries devel \
+		$developDir \
+		$libDir/cmake \
+		$dataDir/Qt5/mkspecs
+}
