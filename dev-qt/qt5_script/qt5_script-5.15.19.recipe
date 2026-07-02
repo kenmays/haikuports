@@ -62,6 +62,7 @@ defineDebugInfoPackage qt5_script$secondaryArchSuffix \
 	"$libDir"/libQt5Script.so.$portVersion \
 	"$libDir"/libQt5ScriptTools.so.$portVersion
 
+
 BUILD()
 {
 	mkdir -p build && cd build
