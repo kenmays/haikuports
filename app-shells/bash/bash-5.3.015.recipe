@@ -104,7 +104,6 @@ INSTALL()
 EOF
 }
 
-
 TEST()
 {
 	make check
