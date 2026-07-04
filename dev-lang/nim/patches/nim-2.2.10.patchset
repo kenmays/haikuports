@@ -1,4 +1,4 @@
-From 51fa4710d97f871e652b42a144d27822524aabe9 Mon Sep 17 00:00:00 2001
+From 7e61a46f0acf2c3b2d6c370c0fc2628c6c9684cb Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
 Date: Sun, 28 Jun 2026 22:26:25 +0200
 Subject: oserrno for Haiku
@@ -181,7 +181,7 @@ index 2a9f82c..b180853 100644
 2.54.0
 
 
-From 9870a68c73c0033591977ac910fa9b9954296f30 Mon Sep 17 00:00:00 2001
+From 4b79c6e7cc868ca4d3e7f13183b1353ca04c27bb Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
 Date: Sun, 28 Jun 2026 23:23:45 +0200
 Subject: more support for Haiku
@@ -275,38 +275,7 @@ index 99dabd7..1c1d138 100644
 2.54.0
 
 
-From fcfd8f3195126b7acf6eddf17dbc6a3ef9e2d593 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
-Date: Tue, 30 Jun 2026 16:46:31 +0200
-Subject: haiku needs libbsd for kqueue
-
-
-diff --git a/config/nim.cfg b/config/nim.cfg
-index 038c3c9..55fed6a 100644
---- a/config/nim.cfg
-+++ b/config/nim.cfg
-@@ -134,11 +134,11 @@ nimblepath="$home/.nimble/pkgs/"
-     # BSD got posix_spawn only recently, so we deactivate it for osproc:
-     define:useFork
-   @elif haiku:
--    gcc.options.linker = "-Wl,--as-needed -lnetwork"
--    gcc.cpp.options.linker = "-Wl,--as-needed -lnetwork"
--    clang.options.linker = "-Wl,--as-needed -lnetwork"
--    clang.cpp.options.linker = "-Wl,--as-needed -lnetwork"
--    tcc.options.linker = "-Wl,--as-needed -lnetwork"
-+    gcc.options.linker = "-Wl,--as-needed -lnetwork -lbsd"
-+    gcc.cpp.options.linker = "-Wl,--as-needed -lnetwork -lbsd"
-+    clang.options.linker = "-Wl,--as-needed -lnetwork -lbsd"
-+    clang.cpp.options.linker = "-Wl,--as-needed -lnetwork -lbsd"
-+    tcc.options.linker = "-Wl,--as-needed -lnetwork -lbsd"
-   @elif not genode:
-     # -fopenmp
-     gcc.options.linker = "-ldl"
--- 
-2.54.0
-
-
-From 0e7a5121ce9f22013da82540c68bcac9a060cc13 Mon Sep 17 00:00:00 2001
+From 45d3c8ee0ebda6b2849bdf3ce9732b2cf58a8e44 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
 Date: Tue, 30 Jun 2026 16:47:04 +0200
 Subject: fix getPlatformString for other OSes
@@ -329,7 +298,7 @@ index 5458b13..8f42dc0 100644
 2.54.0
 
 
-From ca005223cfffd8e7fb41e8aaefcf863c196976c7 Mon Sep 17 00:00:00 2001
+From 843334790bb7432a71447db349b14deafc61bf4b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
 Date: Tue, 30 Jun 2026 16:47:27 +0200
 Subject: pretend to support kqueue on Haiku
@@ -352,7 +321,7 @@ index 26d110f..bd8855d 100644
 2.54.0
 
 
-From e8178447da44916251d2d393e9349a0106d13c9e Mon Sep 17 00:00:00 2001
+From 26e689a4f68bc5885cfa3e66fe2f7b59724ad568 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
 Date: Tue, 30 Jun 2026 16:47:55 +0200
 Subject: osdefs for haiku
@@ -443,7 +412,7 @@ index 1b01fbc..efd5911 100644
 2.54.0
 
 
-From 35f6313eae0837d4986f67c50e51df59bc69d185 Mon Sep 17 00:00:00 2001
+From fd3081c05bca02b79648c264f71e854d987e8b93 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
 Date: Tue, 30 Jun 2026 16:48:18 +0200
 Subject: osnet for haiku
@@ -548,7 +517,7 @@ index 1c1d138..6cf3b4c 100644
 2.54.0
 
 
-From 9651f66f24a7bd2ec57bf3f8f5b7af34c859ba81 Mon Sep 17 00:00:00 2001
+From 52a11c06425d26fd48a5262fd719880004c0cfbb Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
 Date: Tue, 30 Jun 2026 16:48:43 +0200
 Subject: kqueue definitions for haiku
@@ -574,6 +543,31 @@ index 2450cdb..f5edcaf 100644
  when defined(macosx):
    const
      EVFILT_MACHPORT* = -8  ## Mach portsets
+-- 
+2.54.0
+
+
+From 0216d7888a3b91c589aa12f8211c8ed4c344dc5c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
+Date: Sat, 4 Jul 2026 13:16:04 +0200
+Subject: kqueue/kevent resides in libbsd on Haiku
+
+
+diff --git a/dist/nimble/vendor/chronos/chronos/ioselects/ioselectors_kqueue.nim b/dist/nimble/vendor/chronos/chronos/ioselects/ioselectors_kqueue.nim
+index e39f968..aa00022 100644
+--- a/dist/nimble/vendor/chronos/chronos/ioselects/ioselectors_kqueue.nim
++++ b/dist/nimble/vendor/chronos/chronos/ioselects/ioselectors_kqueue.nim
+@@ -13,6 +13,10 @@
+ import std/[kqueue, deques, tables]
+ import stew/base10
+ 
++when defined(haiku):
++  # On Haiku kqueue/kevent lives in libbsd
++  {.passl: "-lbsd".}
++
+ const
+   # SIG_IGN and SIG_DFL declared in posix.nim as variables, but we need them
+   # to be constants and GC-safe.
 -- 
 2.54.0
 
