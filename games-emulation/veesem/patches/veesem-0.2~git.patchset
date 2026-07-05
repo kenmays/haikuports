@@ -1,0 +1,107 @@
+From 6e6d2447323d7ed86c78617bf063f3f8d8318d62 Mon Sep 17 00:00:00 2001
+From: PulkoMandy <pulkomandy@pulkomandy.tk>
+Date: Sun, 5 Jul 2026 09:58:31 +0200
+Subject: Undefine addr_t for Haiku
+
+Types with a _t suffix are reserved for the system. Applications should
+use different suffixes. Haiku already has an addr_t type which is 64
+bits. This patch is inefficient, as it just reuses that. Ideally a
+different name should be used, and a 32 bit type.
+
+diff --git a/src/core/common.h b/src/core/common.h
+index adeaeef..846ea9e 100644
+--- a/src/core/common.h
++++ b/src/core/common.h
+@@ -13,7 +13,12 @@
+ }
+ 
+ using word_t = uint16_t;
++#ifndef __HAIKU__
++// Typenames with _t are reserved for the operating system.
++// Veesem should use another suffix to avoid confusion with OS types.
++// For now, addr_t will be 64 bit on Haiku and we'll see if anything bad happens...
+ using addr_t = uint32_t;  // should really be 22-bit
++#endif
+ 
+ template <std::size_t Bits>
+ inline int sext(unsigned value) {
+@@ -141,4 +146,4 @@ struct Bitfield {
+     operator--();
+     return tmp;
+   }
+-};
+\ No newline at end of file
++};
+-- 
+2.54.0
+
+
+From f2c84a0aefe7368a1b37547dc22a9e63c39b31b5 Mon Sep 17 00:00:00 2001
+From: PulkoMandy <pulkomandy@pulkomandy.tk>
+Date: Sun, 5 Jul 2026 09:59:37 +0200
+Subject: Stub file dialogs for Haiku.
+
+I don't want to write the whole thing for now. Files can be set up from
+the commandline anyways.
+
+diff --git a/src/contrib/nativefiledialog-extended/CMakeLists.txt b/src/contrib/nativefiledialog-extended/CMakeLists.txt
+index 6a5deaa..0dab472 100644
+--- a/src/contrib/nativefiledialog-extended/CMakeLists.txt
++++ b/src/contrib/nativefiledialog-extended/CMakeLists.txt
+@@ -16,6 +16,8 @@ if(WIN32)
+   set(nfd_PLATFORM PLATFORM_WIN32)
+ elseif(APPLE)
+   set(nfd_PLATFORM PLATFORM_MACOS)
++elseif(HAIKU)
++  set(nfd_PLATFORM PLATFORM_HAIKU)
+ elseif(UNIX AND NOT APPLE)
+   set(nfd_PLATFORM PLATFORM_LINUX)
+ endif()
+diff --git a/src/contrib/nativefiledialog-extended/src/CMakeLists.txt b/src/contrib/nativefiledialog-extended/src/CMakeLists.txt
+index ccc8814..ccff283 100644
+--- a/src/contrib/nativefiledialog-extended/src/CMakeLists.txt
++++ b/src/contrib/nativefiledialog-extended/src/CMakeLists.txt
+@@ -12,6 +12,10 @@ if(nfd_PLATFORM STREQUAL PLATFORM_WIN32)
+   list(APPEND SOURCE_FILES nfd_win.cpp)
+ endif()
+ 
++if(nfd_PLATFORM STREQUAL PLATFORM_HAIKU)
++  list(APPEND SOURCE_FILES nfd_haiku.cpp)
++endif()
++
+ if(nfd_PLATFORM STREQUAL PLATFORM_LINUX)
+   find_package(PkgConfig REQUIRED)
+   # for Linux, we support GTK3 and xdg-desktop-portal
+diff --git a/src/contrib/nativefiledialog-extended/src/nfd_haiku.cpp b/src/contrib/nativefiledialog-extended/src/nfd_haiku.cpp
+new file mode 100644
+index 0000000..b4fd614
+--- /dev/null
++++ b/src/contrib/nativefiledialog-extended/src/nfd_haiku.cpp
+@@ -0,0 +1,24 @@
++#include "include/nfd.h"
++
++#include <stdlib.h>
++
++nfdresult_t NFD_Init()
++{
++	return NFD_ERROR;
++}
++
++void NFD_FreePathN(nfdnchar_t* filePath) {
++    free(filePath);
++}
++
++nfdresult_t NFD_SaveDialogN_With_Impl(nfdversion_t version,
++                                      nfdnchar_t** outPath,
++                                      const nfdsavedialognargs_t* args) {
++	return NFD_ERROR;
++}
++
++nfdresult_t NFD_OpenDialogN_With_Impl(nfdversion_t version,
++                                      nfdnchar_t** outPath,
++                                      const nfdopendialognargs_t* args) {
++	return NFD_ERROR;
++}
+-- 
+2.54.0
+
