@@ -22,13 +22,18 @@ if [ ! -f "$hostKeyDir/ssh_host_ecdsa_key" ] ; then
 fi
 
 if [ ! -f "$hostKeyDir/ssh_host_rsa_key" ] ; then
-	_progress 0.5 "rsa"
+	_progress 0.4 "rsa"
 	ssh-keygen -t rsa -f "$hostKeyDir/ssh_host_rsa_key" -N ""
 fi
 
 if [ ! -f "$hostKeyDir/ssh_host_ed25519_key" ] ; then
-	_progress 0.8 "ed25519"
+	_progress 0.6 "ed25519"
 	ssh-keygen -t ed25519 -f "$hostKeyDir/ssh_host_ed25519_key" -N ""
+fi
+
+if [ ! -f "$hostKeyDir/ssh_host_mldsa44-ed25519_key" ] ; then
+	_progress 0.8 "mldsa44-ed25519"
+	ssh-keygen -t mldsa44-ed25519 -f "$hostKeyDir/ssh_host_mldsa44-ed25519_key" -N ""
 fi
 
 # generate what's eventually missing
