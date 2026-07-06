@@ -55,7 +55,7 @@ BUILD_PREREQUIRES="
 	cmd:g++$secondaryArchSuffix
 	cmd:make
 	cmd:perl
-	cmd:qmake
+	cmd:qmake$secondaryArchSuffix >= 5
 	"
 
 defineDebugInfoPackage qt5_script$secondaryArchSuffix \
