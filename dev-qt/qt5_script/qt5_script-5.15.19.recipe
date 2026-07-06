@@ -77,8 +77,8 @@ INSTALL()
 
 	# move everything in place
 	mkdir -p $includeDir $libDir $dataDir
-	mv $prefix/boot/system/develop/headers/* $includeDir/
-	mv $prefix/boot/system/lib/* $libDir/
+	mv $prefix/boot/system/$relativeIncludeDir/* $includeDir/
+	mv $prefix/boot/system/$relativeLibDir/* $libDir/
 	mv $prefix/boot/system/data/* $dataDir/
 	rm -rf $prefix/boot
 	rm $libDir/*.la
