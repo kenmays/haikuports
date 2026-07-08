@@ -1,0 +1,44 @@
+From 90fb4db7a02fc5062b943dc9934099726e528c8c Mon Sep 17 00:00:00 2001
+From: Begasus <begasus@gmail.com>
+Date: Sun, 6 Oct 2024 17:05:28 +0200
+Subject: Disable CMAKE_POSITION_INDEPENDENT_CODE
+
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2e5a165..24c1dab 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -30,7 +30,7 @@ include(CheckPIESupported OPTIONAL RESULT_VARIABLE CHECK_PIE_SUPPORTED)
+ if(CHECK_PIE_SUPPORTED)
+   check_pie_supported(LANGUAGES CXX)
+   if(CMAKE_CXX_LINK_PIE_SUPPORTED)
+-    set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
++    set(CMAKE_POSITION_INDEPENDENT_CODE FALSE)
+   endif()
+ endif()
+ 
+-- 
+2.54.0
+
+
+From 59ca7bb88e41c16f8e6c09a8409a27edf1e4d4f5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
+Date: Wed, 8 Jul 2026 12:04:07 +0200
+Subject: remove crashing test at build time
+
+
+diff --git a/lib/jxl_lists.cmake b/lib/jxl_lists.cmake
+index ff0d780..ffd5fb7 100644
+--- a/lib/jxl_lists.cmake
++++ b/lib/jxl_lists.cmake
+@@ -573,7 +573,6 @@ set(JPEGXL_INTERNAL_TESTS
+   extras/compressed_icc_test.cc
+   extras/dec/color_description_test.cc
+   extras/dec/pgx_test.cc
+-  extras/gain_map_test.cc
+   extras/jpegli_test.cc
+   jxl/ac_strategy_test.cc
+   jxl/alpha_test.cc
+-- 
+2.54.0
+

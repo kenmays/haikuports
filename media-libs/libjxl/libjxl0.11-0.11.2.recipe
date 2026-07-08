@@ -14,28 +14,34 @@ LICENSE="BSD (3-clause)
 	Zlib"
 REVISION="1"
 SOURCE_URI="https://github.com/libjxl/libjxl/archive/refs/tags/v$portVersion.tar.gz"
-CHECKSUM_SHA256="1492dfef8dd6c3036446ac3b340005d92ab92f7d48ee3271b5dac1d36945d3d9"
+CHECKSUM_SHA256="ab38928f7f6248e2a98cc184956021acb927b16a0dee71b4d260dc040a4320ea"
 SOURCE_DIR="libjxl-$portVersion"
+SOURCE_FILENAME="libjxl-$portVersion.tar.gz"
 PATCHES="libjxl0.11-$portVersion.patchset"
 
-SOURCE_URI_2="https://codeberg.org/Begasus/skcms/raw/branch/master/skcms-20231106.tar.gz"
-CHECKSUM_SHA256_2="ade9fb422b94300104d119b4237c159377e40f01e3a4034931220ac965e30255"
-SOURCE_FILENAME_2="ckcms-20231106.tar.gz"
-# checksum changes on every download
-#srcGitRev_2="42030a771244ba67f86b1c1c76a6493f873c5f91"
-#SOURCE_URI_2="https://skia.googlesource.com/skcms/+archive/$srcGitRev_2.tar.gz"
-#CHECKSUM_SHA256_2="f50678add69ad9b11921768a66d067d853a65833625c967fe20e09378b56199c"
-#SOURCE_FILENAME_2="skcms-$srcGitRev_2.tar.gz"
+srcGitRev_2="b2e692629c1fb19342517d7fb61f1cf83d075492"
+SOURCE_URI_2="https://github.com/google/skcms/archive/$srcGitRev_2.tar.gz"
+CHECKSUM_SHA256_2="96e274f403135c19ad4e7f9272f03a64c0aa5615591b087457e7fd0a5f14af23"
+SOURCE_FILENAME_2="skcms-$srcGitRev_2.tar.gz"
+SOURCE_DIR_2="skcms-$srcGitRev_2"
 
-srcGitRev_3="e5ab13008bb214deb66d5f3e17ca2f8dbff150bf"
+srcGitRev_3="94e0df6d0f8b44228de5be0ff35efb9f946a13c9"
 SOURCE_URI_3="https://github.com/webmproject/sjpeg/archive/$srcGitRev_3.tar.gz"
-CHECKSUM_SHA256_3="35c5ad32fd422d279f394dced490208674284ae2f58221c1dfb981dbbdf695b5"
+CHECKSUM_SHA256_3="ac94917fe745a674eabf1e044f23ec55cd5a548c9869c06ec4b19da14ee0227d"
 SOURCE_FILENAME_3="sjpeg-$srcGitRev_3.tar.gz"
+SOURCE_DIR_3="sjpeg-$srcGitRev_3"
 
 srcGitRev_4="8ecba3647edb6dd940463fedf38ca33a8e2a73d1"
 SOURCE_URI_4="https://github.com/libjpeg-turbo/libjpeg-turbo/archive/$srcGitRev_4.tar.gz"
 CHECKSUM_SHA256_4="ed729127097af5000bfeddc6b3e679c4363bb1618ebfc07efb6b47f576471b4b"
 SOURCE_FILENAME_4="ibjpeg-turbo-$srcGitRev_4.tar.gz"
+SOURCE_DIR_4="libjpeg-turbo-$srcGitRev_4"
+
+srcGitRev_5="ff8d743aaba05b3014f17e5475e576242fa979fc"
+SOURCE_URI_5="https://github.com/libjxl/testdata/archive/$srcGitRev_5.tar.gz"
+CHECKSUM_SHA256_5="9c45a108df32a002a69465df896d33acf77d97c88fb59dffa0dff5628370e96f"
+SOURCE_FILENAME_5="libjxl-testdata-$srcGitRev_5.tar.gz"
+SOURCE_DIR_5="testdata-$srcGitRev_5"
 
 ARCHITECTURES="all !x86_gcc2"
 SECONDARY_ARCHITECTURES="x86"
@@ -86,11 +92,6 @@ REQUIRES_tools="
 	$REQUIRES
 	lib:libavif$secondaryArchSuffix
 	lib:libgif$secondaryArchSuffix
-	lib:libIex_3_2$secondaryArchSuffix
-	lib:libIlmThread_3_2$secondaryArchSuffix
-	lib:libImath_3_1$secondaryArchSuffix
-	lib:libOpenEXR_3_2$secondaryArchSuffix
-	lib:libOpenEXRUtil_3_2$secondaryArchSuffix
 	lib:libjpeg$secondaryArchSuffix
 	lib:libpng16$secondaryArchSuffix
 #	lib:libstdc++$secondaryArchSuffix
@@ -117,17 +118,13 @@ BUILD_REQUIRES="
 	devel:libbrotlienc$secondaryArchSuffix
 	devel:libgif$secondaryArchSuffix >= 7.2.0
 	devel:libGL$secondaryArchSuffix
+	devel:libgtest$secondaryArchSuffix
 	devel:libhwy$secondaryArchSuffix
-	devel:libIex_3_2$secondaryArchSuffix
-	devel:libIlmThread_3_2$secondaryArchSuffix
-	devel:libImath_3_1$secondaryArchSuffix
 	devel:libjpeg$secondaryArchSuffix
 	devel:liblcms2$secondaryArchSuffix
-	devel:libOpenEXR_3_2$secondaryArchSuffix
-	devel:libOpenEXRUtil_3_2$secondaryArchSuffix
 	devel:libpng16$secondaryArchSuffix
-	devel:libsharpyuv$secondaryArchSuffix
 	devel:librav1e$secondaryArchSuffix
+	devel:libsharpyuv$secondaryArchSuffix
 	devel:libwebp$secondaryArchSuffix
 	devel:libz$secondaryArchSuffix
 	"
@@ -137,7 +134,6 @@ BUILD_PREREQUIRES="
 	cmd:dot
 	cmd:doxygen
 	cmd:gcc$secondaryArchSuffix
-	cmd:git
 	cmd:make
 	cmd:pkg_config$secondaryArchSuffix
 	cmd:python3
@@ -145,22 +141,28 @@ BUILD_PREREQUIRES="
 
 BUILD()
 {
-	cp -r $sourceDir2/* third_party/skcms
-	cp -r $sourceDir3/sjpeg-$srcGitRev_3/* third_party/sjpeg
-	cp -r $sourceDir4/libjpeg-turbo-$srcGitRev_4/* third_party/libjpeg-turbo
+	rm -rf third_party/{skcms,sjpeg,libjpeg-turbo} testdata
+	ln -srf $sourceDir2/ third_party/skcms
+	ln -srf $sourceDir3/ third_party/sjpeg
+	ln -srf $sourceDir4/ third_party/libjpeg-turbo
+	ln -srf $sourceDir5/ testdata
 
 	cmake -B build -S . $cmakeDirArgs \
 		-DCMAKE_BUILD_TYPE=Release \
-		-DJPEGXL_ENABLE_OPENEXR=true \
-		-DJPEGXL_ENABLE_JPEGLI=true \
+		-DJPEGXL_VERSION=$portVersion \
+		-DJPEGXL_ENABLE_BENCHMARK=false \
 		-DJPEGXL_ENABLE_EXAMPLES=false \
+		-DJPEGXL_ENABLE_FUZZERS=false \
+		-DJPEGXL_ENABLE_OPENEXR=false \
+		-DJPEGXL_ENABLE_PLUGINS=false \
 		-DJPEGXL_FORCE_SYSTEM_BROTLI=true \
+		-DJPEGXL_FORCE_SYSTEM_GTEST=true \
 		-DJPEGXL_FORCE_SYSTEM_HWY=true \
 		-DJPEGXL_FORCE_SYSTEM_LCMS2=true \
 		-DJPEGXL_WARNINGS_AS_ERRORS=false \
-		-DBUILD_TESTING=OFF
+		-Wno-dev
 
-	make -C build $jobArgs
+	cmake --build build $jobArgs
 	make -C build doc
 }
 
@@ -191,5 +193,5 @@ INSTALL()
 
 TEST()
 {
-	make -C build test
+	ctest --test-dir build --output-on-failure $jobArgs
 }
