@@ -1,0 +1,57 @@
+From 43d05c38cad943c6677f92e902454b9225887c5f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Zolt=C3=A1n=20Mizsei?= <zmizsei@extrowerk.com>
+Date: Thu, 29 Oct 2020 07:40:26 +0100
+Subject: Test will not run as root
+
+
+diff --git a/test/run-tests.c b/test/run-tests.c
+index 9c2574e..78a6941 100644
+--- a/test/run-tests.c
++++ b/test/run-tests.c
+@@ -66,7 +66,7 @@ typedef BOOL (WINAPI *sCompareObjectHandles)(_In_ HANDLE, _In_ HANDLE);
+ 
+ 
+ int main(int argc, char **argv) {
+-#ifndef _WIN32
++#if !defined(_WIN32) && !defined(__HAIKU__)
+   if (0 == geteuid() && NULL == getenv("UV_RUN_AS_ROOT")) {
+     fprintf(stderr, "The libuv test suite cannot be run as root.\n");
+     return EXIT_FAILURE;
+-- 
+2.54.0
+
+
+From e071608573a5a3483fcd843b16bbf828d2526201 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
+Date: Thu, 9 Jul 2026 21:32:20 +0200
+Subject: Haiku: build tests with libbsd
+
+
+diff --git a/Makefile.am b/Makefile.am
+index cc70ffe..54b30e2 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -473,6 +473,7 @@ libuv_la_SOURCES += src/unix/bsd-ifaddrs.c \
+                     src/unix/no-proctitle.c \
+                     src/unix/posix-hrtime.c \
+                     src/unix/posix-poll.c
++test_run_tests_LDFLAGS += -lbsd
+ endif
+ 
+ if HURD
+diff --git a/test/test-tty.c b/test/test-tty.c
+index 9ecb3ae..5569ac0 100644
+--- a/test/test-tty.c
++++ b/test/test-tty.c
+@@ -34,6 +34,8 @@
+ #  include <util.h>
+ # elif defined(__FreeBSD__) || defined(__DragonFly__)
+ #  include <libutil.h>
++# elif defined(__HAIKU__)
++#  include <pty.h>
+ # endif
+ #endif
+ 
+-- 
+2.54.0
+
