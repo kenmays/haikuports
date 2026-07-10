@@ -1,0 +1,22 @@
+From 750f4a6890cec4966fa009eb0986be9355db1cff Mon Sep 17 00:00:00 2001
+From: Adrien Destugues <pulkomandy@gmail.com>
+Date: Fri, 10 Jul 2026 18:31:10 +0200
+Subject: Ignore override keyword to fix gcc2 build
+
+This will be fixed in the next upstream release.
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 73e7bae..561f83e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,6 +1,6 @@
+ cmake_minimum_required(VERSION 3.5)
+ project(CriticalMass)
+-set(CMAKE_CXX_FLAGS "-Wall -Wno-multichar -Os")
++set(CMAKE_CXX_FLAGS "-Wall -Wno-multichar -Os -Doverride=")
+ add_subdirectory(Sources)
+ 
+ add_custom_command(OUTPUT CriticalMass.zip
+-- 
+2.54.0
+
