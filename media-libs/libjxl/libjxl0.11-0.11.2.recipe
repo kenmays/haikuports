@@ -12,7 +12,7 @@ LICENSE="BSD (3-clause)
 	Apache v2
 	MIT
 	Zlib"
-REVISION="2"
+REVISION="3"
 SOURCE_URI="https://github.com/libjxl/libjxl/archive/refs/tags/v$portVersion.tar.gz"
 CHECKSUM_SHA256="ab38928f7f6248e2a98cc184956021acb927b16a0dee71b4d260dc040a4320ea"
 SOURCE_DIR="libjxl-$portVersion"
@@ -73,6 +73,9 @@ PROVIDES_devel="
 	"
 REQUIRES_devel="
 	libjxl0.11$secondaryArchSuffix == $portVersion base
+	devel:libbrotlidec$secondaryArchSuffix
+	devel:libbrotlienc$secondaryArchSuffix
+	devel:libhwy$secondaryArchSuffix
 	"
 CONFLICTS_devel="
 	libjxl${secondaryArchSuffix}_devel
