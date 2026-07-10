@@ -1,11 +1,11 @@
-From b5fbd83166a4f0d12c6a33ace15f983ac7836e00 Mon Sep 17 00:00:00 2001
+From b07bc0dd92cfa61addb6aa6e41c58aef033f6f5d Mon Sep 17 00:00:00 2001
 From: begasus <begasus@gmail.com>
 Date: Mon, 10 Jun 2019 19:04:18 +0200
 Subject: Fix for gcc2 and test-bz106632
 
 
 diff --git a/fc-cache/fc-cache.c b/fc-cache/fc-cache.c
-index e225bdc..dda94ca 100644
+index 295a178..3766c77 100644
 --- a/fc-cache/fc-cache.c
 +++ b/fc-cache/fc-cache.c
 @@ -151,6 +151,7 @@ scanDirs (FcStrList *list, FcConfig *config, FcBool force, FcBool really_force,
@@ -25,10 +25,10 @@ index e225bdc..dda94ca 100644
  	    rooted_dir = FcStrPlus (sysroot, dir);
  	} else {
 diff --git a/src/fccfg.c b/src/fccfg.c
-index 4bd1e4d..bf0db63 100644
+index 7bca51e..d27a628 100644
 --- a/src/fccfg.c
 +++ b/src/fccfg.c
-@@ -2680,11 +2680,12 @@ FcConfigRealFilename (FcConfig      *config,
+@@ -2687,11 +2687,12 @@ FcConfigRealFilename (FcConfig      *config,
  		return n;
  	    else if (!FcStrIsAbsoluteFilename (buf)) {
  		FcChar8 *dirname = FcStrDirname (n);
@@ -43,17 +43,17 @@ index 4bd1e4d..bf0db63 100644
  		if (!path)
  		    return NULL;
 -- 
-2.50.1
+2.54.0
 
 
-From c5a1e7af156b43d3ce6f5713436a52d277b77fcf Mon Sep 17 00:00:00 2001
+From a136f7c989ae2909c2b4666e8aaa0e836b7455cf Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Joachim=20Mairb=C3=B6ck?= <j.mairboeck@gmail.com>
 Date: Wed, 27 Aug 2025 17:14:48 +0200
 Subject: more gcc2 fixes
 
 
 diff --git a/fc-query/fc-query.c b/fc-query/fc-query.c
-index debf4d3..f905d99 100644
+index 1313717..bf263d4 100644
 --- a/fc-query/fc-query.c
 +++ b/fc-query/fc-query.c
 @@ -121,6 +121,7 @@ main (int argc, char **argv)
@@ -73,38 +73,48 @@ index debf4d3..f905d99 100644
      if (getenv ("FC_FONTATIONS") != NULL) {
  	query_function = FcFontationsQueryAll;
 diff --git a/src/fcdir.c b/src/fcdir.c
-index 9527d94..9bd673e 100644
+index 9034643..8330f27 100644
 --- a/src/fcdir.c
 +++ b/src/fcdir.c
-@@ -75,13 +75,13 @@ FcFileScanFontConfig (FcFontSet     *set,
+@@ -79,12 +79,6 @@ FcFileScanFontConfig (FcFontSet     *set,
      FcBool         ret = FcTrue;
      int            old_nfont = set->nfont;
      const FcChar8 *sysroot = FcConfigGetSysRoot (config);
-+    unsigned int (*query_function) (const FcChar8 *, unsigned int, FcBlanks *, int *, FcFontSet *) = FcFreeTypeQueryAll;
+-
+-    if (FcDebug() & FC_DBG_SCAN) {
+-	printf ("\tScanning file %s...", file);
+-	fflush (stdout);
+-    }
+-
+     unsigned int (*query_function) (const FcChar8 *, unsigned int, FcBlanks *, int *, FcFontSet *) =
+ #if ENABLE_FONTATIONS && !defined(ENABLE_FREETYPE)
+     FcFontationsQueryAll;
+@@ -92,6 +86,11 @@ FcFileScanFontConfig (FcFontSet     *set,
+     FcFreeTypeQueryAll;
+ #endif
  
-     if (FcDebug() & FC_DBG_SCAN) {
- 	printf ("\tScanning file %s...", file);
- 	fflush (stdout);
-     }
- 
--    unsigned int (*query_function) (const FcChar8 *, unsigned int, FcBlanks *, int *, FcFontSet *) = FcFreeTypeQueryAll;
++    if (FcDebug() & FC_DBG_SCAN) {
++	printf ("\tScanning file %s...", file);
++	fflush (stdout);
++    }
++
  #if ENABLE_FONTATIONS
      if (getenv ("FC_FONTATIONS")) {
  	query_function = FcFontationsQueryAll;
 diff --git a/src/fcfreetype.c b/src/fcfreetype.c
-index 0a87d27..111f2b1 100644
+index ccf4a96..c6441eb 100644
 --- a/src/fcfreetype.c
 +++ b/src/fcfreetype.c
-@@ -1210,6 +1210,8 @@ FcFreeTypeQueryFaceInternal (const FT_Face   face,
-     FcBool   symbol = FcFalse;
+@@ -1211,6 +1211,8 @@ FcFreeTypeQueryFaceInternal (const FT_Face   face,
      FT_Error ftresult;
+     FcChar8 *canon_file = NULL;
  
 +    FcChar8 *wrapper = NULL;
 +
      FcInitDebug(); /* We might be called with no initizalization whatsoever. */
  
      pat = FcPatternCreate();
-@@ -2027,8 +2029,6 @@ FcFreeTypeQueryFaceInternal (const FT_Face   face,
+@@ -2035,8 +2037,6 @@ FcFreeTypeQueryFaceInternal (const FT_Face   face,
  	    goto bail2;
      }
  
@@ -113,7 +123,7 @@ index 0a87d27..111f2b1 100644
  #if HAVE_FT_GET_X11_FONT_FORMAT
      /*
       * Use the (not well documented or supported) X-specific function
-@@ -2051,12 +2051,13 @@ FcFreeTypeQueryFaceInternal (const FT_Face   face,
+@@ -2059,12 +2059,13 @@ FcFreeTypeQueryFaceInternal (const FT_Face   face,
  	goto bail2;
  
      if (FT_IS_SFNT (face)) {
@@ -130,10 +140,10 @@ index 0a87d27..111f2b1 100644
  	    if (buf[0] == 'w' && buf[1] == 'O' && buf[2] == 'F') {
  		if (buf[3] == 'F')
 diff --git a/src/fcint.h b/src/fcint.h
-index 8046cc8..a5e8ae8 100644
+index 1fd9e1e..bf651a6 100644
 --- a/src/fcint.h
 +++ b/src/fcint.h
-@@ -63,7 +63,7 @@
+@@ -64,7 +64,7 @@
  #  define FC_CONFIG_PATH "fonts.conf"
  #endif
  
@@ -204,5 +214,5 @@ index 398619b..67b8f0f 100644
      bucket.offset = offset;
      bucket.hash = FcSerializeHashPtr (object);
 -- 
-2.50.1
+2.54.0
 
