@@ -19,94 +19,67 @@ behavior) with cycle removal.
 * Command line interpreter with contextual colorization implemented in Javascript.
 * Small built-in standard library with C library wrappers.
 "
-HOMEPAGE="https://bellard.org/quickjs/"
+HOMEPAGE="https://quickjs-ng.github.io/quickjs"
 COPYRIGHT="2017-2021 Fabrice Bellard
 	2017-2021 Charlie Gordon"
 LICENSE="MIT"
 REVISION="1"
-SOURCE_URI="https://bellard.org/quickjs/quickjs-${portVersion//./-}.tar.xz"
-CHECKSUM_SHA256="996c6b5018fc955ad4d06426d0e9cb713685a00c825aa5c0418bd53f7df8b0b4"
-_version=${portVersion//./-}
-SOURCE_DIR="quickjs-${_version%-*}"
-PATCHES="quickjs-$portVersion.patchset"
+SOURCE_URI="https://github.com/quickjs-ng/quickjs/archive/refs/tags/v$portVersion.tar.gz"
+CHECKSUM_SHA256="c4e813951b7c46845096a948e978c620b11ab4cf5fd622ca09c727ec31f42623"
+SOURCE_DIR="quickjs-$portVersion"
 
 ARCHITECTURES="all !x86_gcc2"
 SECONDARY_ARCHITECTURES="x86"
+
+libVersion="$portVersion"
+libVersionCompat="$libVersion compat >= ${libVersion%%.*}"
 
 PROVIDES="
 	$portName = $portVersion
 	cmd:qjs = $portVersion
 	cmd:qjsc = $portVersion
+	lib:libqjs$secondaryArchSuffix = $libVersionCompat
 	"
 REQUIRES="
 	haiku$secondaryArchSuffix
 	"
+REPLACES="quickjs$secondaryArchSuffix"
 
 PROVIDES_devel="
 	${portName}_devel = $portVersion
-	devel:libquickjs$secondaryArchSuffix = $portVersion
-	devel:libquickjs.lto$secondaryArchSuffix = $portVersion
+	devel:libqjs$secondaryArchSuffix = $libVersionCompat
 	"
 REQUIRES_devel="
 	$portName == $portVersion base
 	"
-
-ARCHITECTURES_doc="any"
-PROVIDES_doc="
-	${portBaseName}_doc
-	"
+REPLACES_devel="quickjs${secondaryArchSuffix}_devel"
 
 BUILD_REQUIRES="
 	haiku${secondaryArchSuffix}_devel
 	"
 BUILD_PREREQUIRES="
+	cmd:cmake
 	cmd:gcc$secondaryArchSuffix
 	cmd:make
 	"
 
 BUILD()
 {
-	CONFIG_LTO=y \
-		make $jobArgs
+	cmake -Bbuild -S. $cmakeDirArgs -W no-dev \
+		-DCMAKE_BUILD_TYPE=Release -DQJS_BUILD_LIBC=ON -DBUILD_SHARED_LIBS=ON
+	cmake --build build $jobArgs
 }
 
 INSTALL()
 {
-	CONFIG_LTO=y \
-	PREFIX=$prefix \
-	LIBDIR=$developLibDir \
-	HEADERSDIR=$developDir \
-		make install
+	cmake --install build
+
+	prepareInstalledDevelLib libqjs
 
 	# devel package
 	packageEntries devel \
-		$developDir
-
-	# doc package
-	install -d $documentationDir/packages/$portBaseName
-	install -t $documentationDir/packages/$portBaseName doc/quickjs.pdf
-	install -t $documentationDir/packages/$portBaseName doc/quickjs.html
-
-	packageEntries doc \
-		$documentationDir
-}
-
-
-# On hrev59057 x86_32 (VMWare), got:
-# Error: assertion failed: got number:|29256|, expected number:|29312| (order of operations / precision in MakeTime)
-#     at throw_error (tests/test_builtin.js:8:20)
-#     at assert (tests/test_builtin.js:46:16)
-#     at test_date (tests/test_builtin.js:694:15)
-#     at <eval> (tests/test_builtin.js:1174:10)
-# make: *** [Makefile:455: test] Error 1
-#
-# On hrev59110 x86_64 (VMware), got:
-# Error: assertion failed: got |false|, expected |true|
-#     at assert (tests/test_std.js:17:16)
-#     at test_os (tests/test_std.js:236:11)
-#     at <anonymous> (tests/test_std.js:330:8)
-# make: *** [Makefile:460: test] Error 1
-TEST()
-{
-	make test $jobArgs
+		$developDir \
+		$libDir/cmake \
+		$docDir
+	rm -rf $(dirname $docDir)
 }
