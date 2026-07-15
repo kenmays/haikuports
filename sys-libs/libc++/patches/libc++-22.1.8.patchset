@@ -1,0 +1,394 @@
+From 712d17a23d2bd8ab808d2a25dc1f246711d1f477 Mon Sep 17 00:00:00 2001
+From: Elaine Gibson <ypsvlq@gmail.com>
+Date: Thu, 7 May 2026 11:03:42 +0100
+Subject: Port to Haiku
+
+
+diff --git a/libcxx/include/CMakeLists.txt b/libcxx/include/CMakeLists.txt
+index 787cfffa5..2fe2386f5 100644
+--- a/libcxx/include/CMakeLists.txt
++++ b/libcxx/include/CMakeLists.txt
+@@ -535,6 +535,7 @@ set(files
+   __locale_dir/support/bsd_like.h
+   __locale_dir/support/freebsd.h
+   __locale_dir/support/fuchsia.h
++  __locale_dir/support/haiku.h
+   __locale_dir/support/linux.h
+   __locale_dir/support/netbsd.h
+   __locale_dir/support/newlib.h
+diff --git a/libcxx/include/__config b/libcxx/include/__config
+index f72f091d2..5fabffa93 100644
+--- a/libcxx/include/__config
++++ b/libcxx/include/__config
+@@ -631,7 +631,8 @@ typedef __char32_t char32_t;
+         defined(__APPLE__) ||                                                                                          \
+         defined(__MVS__) ||                                                                                            \
+         defined(_AIX) ||                                                                                               \
+-        defined(__EMSCRIPTEN__)
++        defined(__EMSCRIPTEN__) ||                                                                                     \
++        defined(__HAIKU__)
+ // clang-format on
+ #      undef _LIBCPP_HAS_THREAD_API_PTHREAD
+ #      define _LIBCPP_HAS_THREAD_API_PTHREAD 1
+diff --git a/libcxx/include/__locale b/libcxx/include/__locale
+index 5b1787451..fe53f2fea 100644
+--- a/libcxx/include/__locale
++++ b/libcxx/include/__locale
+@@ -435,6 +435,19 @@ public:
+   static const mask blank  = __ISBLANK;
+ #    endif
+   static const mask __regex_word = 0x8000;
++#  elif defined(__HAIKU__)
++  typedef unsigned short mask;
++  static const mask space        = _ISspace;
++  static const mask print        = _ISprint;
++  static const mask cntrl        = _IScntrl;
++  static const mask upper        = _ISupper;
++  static const mask lower        = _ISlower;
++  static const mask alpha        = _ISalpha;
++  static const mask digit        = _ISdigit;
++  static const mask punct        = _ISpunct;
++  static const mask xdigit       = _ISxdigit;
++  static const mask blank        = _ISblank;
++  static const mask __regex_word = 0x80;
+ #  else
+ #    error unknown rune table for this platform -- do you mean to define _LIBCPP_PROVIDES_DEFAULT_RUNE_TABLE?
+ #  endif
+diff --git a/libcxx/include/__locale_dir/locale_base_api.h b/libcxx/include/__locale_dir/locale_base_api.h
+index 0474c1db3..6bacac763 100644
+--- a/libcxx/include/__locale_dir/locale_base_api.h
++++ b/libcxx/include/__locale_dir/locale_base_api.h
+@@ -122,6 +122,8 @@
+ #    include <__locale_dir/support/newlib.h>
+ #  elif defined(_AIX)
+ #    include <__locale_dir/support/aix.h>
++#  elif defined(__HAIKU__)
++#    include <__locale_dir/support/haiku.h>
+ #  else
+ 
+ // TODO: This is a temporary definition to bridge between the old way we defined the locale base API
+diff --git a/libcxx/include/__locale_dir/support/haiku.h b/libcxx/include/__locale_dir/support/haiku.h
+new file mode 100644
+index 000000000..82d6e6b1f
+--- /dev/null
++++ b/libcxx/include/__locale_dir/support/haiku.h
+@@ -0,0 +1,242 @@
++//===-----------------------------------------------------------------------===//
++//
++// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
++// See https://llvm.org/LICENSE.txt for license information.
++// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
++//
++//===----------------------------------------------------------------------===//
++
++#ifndef _LIBCPP___LOCALE_DIR_SUPPORT_HAIKU_H
++#define _LIBCPP___LOCALE_DIR_SUPPORT_HAIKU_H
++
++#include <__config>
++#include <cctype>
++#include <clocale>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
++#if _LIBCPP_HAS_WIDE_CHARACTERS
++#  include <cwchar>
++#  include <cwctype>
++#endif
++
++#if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
++#  pragma GCC system_header
++#endif
++
++_LIBCPP_BEGIN_NAMESPACE_STD
++namespace __locale {
++
++struct __locale_guard {
++  _LIBCPP_HIDE_FROM_ABI __locale_guard(locale_t& __loc) : __old_loc_(::uselocale(__loc)) {}
++
++  _LIBCPP_HIDE_FROM_ABI ~__locale_guard() {
++    if (__old_loc_)
++      ::uselocale(__old_loc_);
++  }
++
++  locale_t __old_loc_;
++
++  __locale_guard(__locale_guard const&)            = delete;
++  __locale_guard& operator=(__locale_guard const&) = delete;
++};
++
++//
++// Locale management
++//
++#define _LIBCPP_COLLATE_MASK LC_COLLATE_MASK
++#define _LIBCPP_CTYPE_MASK LC_CTYPE_MASK
++#define _LIBCPP_MONETARY_MASK LC_MONETARY_MASK
++#define _LIBCPP_NUMERIC_MASK LC_NUMERIC_MASK
++#define _LIBCPP_TIME_MASK LC_TIME_MASK
++#define _LIBCPP_MESSAGES_MASK LC_MESSAGES_MASK
++#define _LIBCPP_ALL_MASK LC_ALL_MASK
++#define _LIBCPP_LC_ALL LC_ALL
++
++using __locale_t _LIBCPP_NODEBUG = ::locale_t;
++
++#if defined(_LIBCPP_BUILDING_LIBRARY)
++using __lconv_t _LIBCPP_NODEBUG = std::lconv;
++
++inline _LIBCPP_HIDE_FROM_ABI __locale_t __newlocale(int __category_mask, const char* __locale, __locale_t __base) {
++  return ::newlocale(__category_mask, __locale, __base);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI void __freelocale(__locale_t __loc) { ::freelocale(__loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI char* __setlocale(int __category, char const* __locale) {
++  return ::setlocale(__category, __locale);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI __lconv_t* __localeconv(__locale_t& __loc) {
++  __locale_guard __current(__loc);
++  return std::localeconv();
++}
++#endif // _LIBCPP_BUILDING_LIBRARY
++
++//
++// Strtonum functions
++//
++inline _LIBCPP_HIDE_FROM_ABI float __strtof(const char* __nptr, char** __endptr, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::strtof(__nptr, __endptr);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI double __strtod(const char* __nptr, char** __endptr, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::strtod(__nptr, __endptr);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI long double __strtold(const char* __nptr, char** __endptr, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::strtold(__nptr, __endptr);
++}
++
++//
++// Character manipulation functions
++//
++#if defined(_LIBCPP_BUILDING_LIBRARY)
++inline _LIBCPP_HIDE_FROM_ABI int __toupper(int __c, __locale_t __loc) { return ::toupper_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __tolower(int __c, __locale_t __loc) { return ::tolower_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __strcoll(const char* __s1, const char* __s2, __locale_t __loc) {
++  return ::strcoll_l(__s1, __s2, __loc);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI size_t __strxfrm(char* __dest, const char* __src, size_t __n, __locale_t __loc) {
++  return ::strxfrm_l(__dest, __src, __n, __loc);
++}
++
++#  if _LIBCPP_HAS_WIDE_CHARACTERS
++inline _LIBCPP_HIDE_FROM_ABI int __iswctype(wint_t __c, wctype_t __type, __locale_t __loc) {
++  return ::iswctype_l(__c, __type, __loc);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswspace(wint_t __c, __locale_t __loc) { return ::iswspace_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswprint(wint_t __c, __locale_t __loc) { return ::iswprint_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswcntrl(wint_t __c, __locale_t __loc) { return ::iswcntrl_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswupper(wint_t __c, __locale_t __loc) { return ::iswupper_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswlower(wint_t __c, __locale_t __loc) { return ::iswlower_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswalpha(wint_t __c, __locale_t __loc) { return ::iswalpha_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswblank(wint_t __c, __locale_t __loc) { return ::iswblank_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswdigit(wint_t __c, __locale_t __loc) { return ::iswdigit_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswpunct(wint_t __c, __locale_t __loc) { return ::iswpunct_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __iswxdigit(wint_t __c, __locale_t __loc) { return ::iswxdigit_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI wint_t __towupper(wint_t __c, __locale_t __loc) { return ::towupper_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI wint_t __towlower(wint_t __c, __locale_t __loc) { return ::towlower_l(__c, __loc); }
++
++inline _LIBCPP_HIDE_FROM_ABI int __wcscoll(const wchar_t* __ws1, const wchar_t* __ws2, __locale_t __loc) {
++  return ::wcscoll_l(__ws1, __ws2, __loc);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI size_t __wcsxfrm(wchar_t* __dest, const wchar_t* __src, size_t __n, __locale_t __loc) {
++  return ::wcsxfrm_l(__dest, __src, __n, __loc);
++}
++#  endif // _LIBCPP_HAS_WIDE_CHARACTERS
++
++inline _LIBCPP_HIDE_FROM_ABI _LIBCPP_ATTRIBUTE_FORMAT(__strftime__, 3, 0) size_t
++    __strftime(char* __s, size_t __max, const char* __format, const struct tm* __tm, __locale_t __loc) {
++  return ::strftime_l(__s, __max, __format, __tm, __loc);
++}
++
++//
++// Other functions
++//
++inline _LIBCPP_HIDE_FROM_ABI decltype(MB_CUR_MAX) __mb_len_max(__locale_t __loc) {
++  __locale_guard __current(__loc);
++  return MB_CUR_MAX;
++}
++
++#  if _LIBCPP_HAS_WIDE_CHARACTERS
++inline _LIBCPP_HIDE_FROM_ABI wint_t __btowc(int __c, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::btowc(__c);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI int __wctob(wint_t __c, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::wctob(__c);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI size_t
++__wcsnrtombs(char* __dest, const wchar_t** __src, size_t __nwc, size_t __len, mbstate_t* __ps, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return ::wcsnrtombs(__dest, __src, __nwc, __len, __ps); // non-standard
++}
++
++inline _LIBCPP_HIDE_FROM_ABI size_t __wcrtomb(char* __s, wchar_t __wc, mbstate_t* __ps, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::wcrtomb(__s, __wc, __ps);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI size_t
++__mbsnrtowcs(wchar_t* __dest, const char** __src, size_t __nms, size_t __len, mbstate_t* __ps, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return ::mbsnrtowcs(__dest, __src, __nms, __len, __ps); // non-standard
++}
++
++inline _LIBCPP_HIDE_FROM_ABI size_t
++__mbrtowc(wchar_t* __pwc, const char* __s, size_t __n, mbstate_t* __ps, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::mbrtowc(__pwc, __s, __n, __ps);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI int __mbtowc(wchar_t* __pwc, const char* __pmb, size_t __max, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::mbtowc(__pwc, __pmb, __max);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI size_t __mbrlen(const char* __s, size_t __n, mbstate_t* __ps, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::mbrlen(__s, __n, __ps);
++}
++
++inline _LIBCPP_HIDE_FROM_ABI size_t
++__mbsrtowcs(wchar_t* __dest, const char** __src, size_t __len, mbstate_t* __ps, __locale_t __loc) {
++  __locale_guard __current(__loc);
++  return std::mbsrtowcs(__dest, __src, __len, __ps);
++}
++#  endif // _LIBCPP_HAS_WIDE_CHARACTERS
++#endif   // _LIBCPP_BUILDING_LIBRARY
++
++#ifndef _LIBCPP_COMPILER_GCC // GCC complains that this can't be always_inline due to C-style varargs
++_LIBCPP_HIDE_FROM_ABI
++#endif
++inline _LIBCPP_ATTRIBUTE_FORMAT(__printf__, 4, 5) int __snprintf(
++    char* __s, size_t __n, __locale_t __loc, const char* __format, ...) {
++  va_list __va;
++  va_start(__va, __format);
++  __locale_guard __current(__loc);
++  int __res = std::vsnprintf(__s, __n, __format, __va);
++  va_end(__va);
++  return __res;
++}
++
++#ifndef _LIBCPP_COMPILER_GCC // GCC complains that this can't be always_inline due to C-style varargs
++_LIBCPP_HIDE_FROM_ABI
++#endif
++inline _LIBCPP_ATTRIBUTE_FORMAT(__printf__, 3, 4) int __asprintf(
++    char** __s, __locale_t __loc, const char* __format, ...) {
++  va_list __va;
++  va_start(__va, __format);
++  __locale_guard __current(__loc);
++  int __res = ::vasprintf(__s, __format, __va); // non-standard
++  va_end(__va);
++  return __res;
++}
++} // namespace __locale
++_LIBCPP_END_NAMESPACE_STD
++
++#endif // _LIBCPP___LOCALE_DIR_SUPPORT_HAIKU_H
+diff --git a/libcxx/include/module.modulemap.in b/libcxx/include/module.modulemap.in
+index 6bee3809d..f7d5ba307 100644
+--- a/libcxx/include/module.modulemap.in
++++ b/libcxx/include/module.modulemap.in
+@@ -1586,6 +1586,7 @@ module std [system] {
+       textual header "__locale_dir/support/bsd_like.h"
+       textual header "__locale_dir/support/freebsd.h"
+       textual header "__locale_dir/support/fuchsia.h"
++      textual header "__locale_dir/support/haiku.h"
+       textual header "__locale_dir/support/linux.h"
+       textual header "__locale_dir/support/netbsd.h"
+       textual header "__locale_dir/support/newlib.h"
+-- 
+2.54.0
+
+
+From 7754bb4e7d7462c6c31fce40a2933a719d3f2cf7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
+Date: Wed, 15 Jul 2026 12:13:53 +0200
+Subject: libcxx: Fix build on Haiku
+
+
+diff --git a/libcxx/include/__locale_dir/support/haiku.h b/libcxx/include/__locale_dir/support/haiku.h
+index 82d6e6b1f..d668a746c 100644
+--- a/libcxx/include/__locale_dir/support/haiku.h
++++ b/libcxx/include/__locale_dir/support/haiku.h
+@@ -24,6 +24,9 @@
+ #  pragma GCC system_header
+ #endif
+ 
++// needed at least on r1beta5
++extern "C" int vasprintf(char **ret, char const *format, va_list ap);
++
+ _LIBCPP_BEGIN_NAMESPACE_STD
+ namespace __locale {
+ 
+diff --git a/libcxx/src/include/config_elast.h b/libcxx/src/include/config_elast.h
+index be665a97b..82f5d121b 100644
+--- a/libcxx/src/include/config_elast.h
++++ b/libcxx/src/include/config_elast.h
+@@ -33,6 +33,8 @@
+ // No _LIBCPP_ELAST needed on WASI
+ #elif defined(__EMSCRIPTEN__)
+ // No _LIBCPP_ELAST needed on Emscripten
++#elif defined(__HAIKU__)
++// No _LIBCPP_ELAST needed on Haiku
+ #elif defined(__linux__) || _LIBCPP_HAS_MUSL_LIBC
+ #  define _LIBCPP_ELAST 4095
+ #elif defined(__APPLE__)
+-- 
+2.54.0
+
+
+From b64dad9681b7e5cb7f120f0a83e4564ea8938f48 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=A9r=C3=B4me=20Duval?= <jerome.duval@gmail.com>
+Date: Wed, 15 Jul 2026 12:54:10 +0200
+Subject: libcxx: don't depend on openmp
+
+
+diff --git a/libcxx/cmake/config-ix.cmake b/libcxx/cmake/config-ix.cmake
+index 270d80575..e6f114979 100644
+--- a/libcxx/cmake/config-ix.cmake
++++ b/libcxx/cmake/config-ix.cmake
+@@ -122,6 +122,10 @@ elseif(ANDROID)
+   set(LIBCXX_HAS_PTHREAD_LIB NO)
+   set(LIBCXX_HAS_RT_LIB NO)
+   set(LIBCXX_HAS_ATOMIC_LIB NO)
++elseif(HAIKU)
++  set(LIBCXX_HAS_PTHREAD_LIB NO)
++  set(LIBCXX_HAS_RT_LIB NO)
++  set(LIBCXX_HAS_ATOMIC_LIB NO)
+ elseif(PICOLIBC)
+   set(LIBCXX_HAS_PTHREAD_LIB NO)
+   set(LIBCXX_HAS_RT_LIB NO)
+-- 
+2.54.0
+

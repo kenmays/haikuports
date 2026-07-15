@@ -1,0 +1,93 @@
+SUMMARY="C++ standard library (LLVM)"
+DESCRIPTION="libc++ is a new implementation of the C++ standard library, targeting C++11 and above."
+HOMEPAGE="https://www.llvm.org/"
+COPYRIGHT="2003-2026 University of Illinois at Urbana-Champaign"
+LICENSE="Apache v2 with LLVM Exception"
+REVISION="1"
+SOURCE_URI="https://github.com/llvm/llvm-project/releases/download/llvmorg-$portVersion/llvm-project-$portVersion.src.tar.xz"
+CHECKSUM_SHA256="922f1817a0df7b1489272d18134ee0087a8b068828f87ac63b9861b1a9965888"
+SOURCE_DIR="llvm-project-$portVersion.src"
+PATCHES="libc++-$portVersion.patchset"
+
+ARCHITECTURES="?all !x86_gcc2"
+SECONDARY_ARCHITECTURES="?x86"
+
+portVersionCompat="$portVersion compat >= ${portVersion%%.*}"
+
+PROVIDES="
+	libc++$secondaryArchSuffix = $portVersionCompat
+	devel:libc++$secondaryArchSuffix = 1.0 compat >= 1
+	devel:libc++experimental$secondaryArchSuffix
+	lib:libc++$secondaryArchSuffix = 1.0 compat >= 1
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	lib:libc++abi$secondaryArchSuffix
+	"
+
+PROVIDES_abi="
+	libc++${secondaryArchSuffix}_abi = $portVersionCompat
+	devel:libc++abi$secondaryArchSuffix = 1.0 compat >= 1
+	lib:libc++abi$secondaryArchSuffix = 1.0 compat >= 1
+	"
+REQUIRES_abi="
+	haiku$secondaryArchSuffix
+	gcc${secondaryArchSuffix}_syslibs
+	"
+
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	gcc${secondaryArchSuffix}_syslibs_devel
+	gcc${secondaryArchSuffix}_syslibs
+	llvm22 == $portVersion
+	llvm22${secondaryArchSuffix}_clang == $portVersion
+	llvm22${secondaryArchSuffix}_openmp == $portVersion
+	"
+BUILD_PREREQUIRES="
+	cmd:as$secondaryArchSuffix
+	cmd:cmake
+	cmd:gcc$secondaryArchSuffix
+	cmd:ld$secondaryArchSuffix
+	cmd:make
+	cmd:ninja
+	cmd:python3
+	"
+
+BUILD()
+{
+	cmake -G Ninja -Bbuild \
+		$cmakeDirArgs \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_C_COMPILER=clang \
+		-DCMAKE_CXX_COMPILER=clang++ \
+		-DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi" \
+		-DLLVM_ENABLE_PIC=ON \
+		-DLIBCXX_INSTALL_MODULES=ON \
+		-DLIBCXX_INSTALL_MODULES_DIR="$relativeDataDir/libc++/v1" \
+		-DLIBCXXABI_USE_LLVM_UNWINDER=OFF \
+		$sourceDir/runtimes
+	ninja -C build cxx cxxabi $jobArgs
+}
+
+INSTALL()
+{
+	ninja -C build install-cxx install-cxxabi
+
+	rm $libDir/libc++{,abi}.a
+
+	prepareInstalledDevelLibs libc++ libc++abi libc++experimental
+	mv $developLibDir/libc++.so.1* $libDir
+
+	# abi package
+	packageEntries abi \
+		$libDir/libc++abi* \
+		$developLibDir/libc++abi* \
+		$includeDir/c++/v1/cxxabi.h \
+		$includeDir/c++/v1/__cxxabi_config.h
+}
+
+TEST()
+{
+	local -x LIT_PRESERVES_TMP=1
+	ninja -C build check-cxx check-cxxabi
+}
