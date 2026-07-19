@@ -1,6 +1,6 @@
-From 62f5fea4121250951bcd637c8bce341318979261 Mon Sep 17 00:00:00 2001
+From 33caa03bfc6df21facf6c552da26098024d936bb Mon Sep 17 00:00:00 2001
 From: Gerasim Troeglazov <3dEyes@gmail.com>
-Date: Mon, 13 Apr 2026 13:35:20 +1000
+Date: Sun, 19 Jul 2026 18:22:20 +1000
 Subject: Add haiku support
 
 
@@ -138,10 +138,10 @@ index 0000000..e5f8b64
 +
 +resource("BEOS:default_shortcut") "S";
 diff --git a/Telegram/CMakeLists.txt b/Telegram/CMakeLists.txt
-index a737da8..ded9862 100644
+index 5476f7e..b8aa332 100644
 --- a/Telegram/CMakeLists.txt
 +++ b/Telegram/CMakeLists.txt
-@@ -101,6 +101,15 @@ if (NOT DESKTOP_APP_DISABLE_SWIFT6)
+@@ -94,6 +94,15 @@ if (NOT DESKTOP_APP_DISABLE_SWIFT6)
      telegram_add_apple_swift_runtime(Telegram)
  endif()
  
@@ -157,7 +157,7 @@ index a737da8..ded9862 100644
  target_precompile_headers(Telegram PRIVATE $<$<COMPILE_LANGUAGE:CXX,OBJCXX>:${src_loc}/stdafx.h>)
  nice_target_sources(Telegram ${src_loc}
  PRIVATE
-@@ -1908,6 +1917,16 @@ if (NOT build_winstore)
+@@ -2068,6 +2077,16 @@ if (NOT build_winstore)
      )
  endif()
  
@@ -195,10 +195,10 @@ index 354e9c0..9073d98 100644
  		if (const auto strong = weak.get()) {
  			showBox(Box(SettingsBox, strong));
 diff --git a/Telegram/SourceFiles/core/core_settings.h b/Telegram/SourceFiles/core/core_settings.h
-index 26da92f..ddfc116 100644
+index 0012307..d5e6b57 100644
 --- a/Telegram/SourceFiles/core/core_settings.h
 +++ b/Telegram/SourceFiles/core/core_settings.h
-@@ -1140,7 +1140,7 @@ private:
+@@ -1154,7 +1154,7 @@ private:
  	rpl::variable<float64> _dialogsNoChatWidthRatio; // per-window
  	rpl::variable<int> _thirdColumnWidth = kDefaultThirdColumnWidth; // p-w
  	bool _notifyFromAll = true;
@@ -208,10 +208,10 @@ index 26da92f..ddfc116 100644
  	rpl::variable<bool> _systemDarkModeEnabled = true;
  	bool _systemAccentColorEnabled = false;
 diff --git a/Telegram/SourceFiles/core/sandbox.cpp b/Telegram/SourceFiles/core/sandbox.cpp
-index 81ea4e4..a2dabb2 100644
+index 7fc9a80..7001fea 100644
 --- a/Telegram/SourceFiles/core/sandbox.cpp
 +++ b/Telegram/SourceFiles/core/sandbox.cpp
-@@ -203,7 +203,7 @@ void Sandbox::setupScreenScale() {
+@@ -248,7 +248,7 @@ void Sandbox::setupScreenScale() {
  
  	const auto screen = Sandbox::primaryScreen();
  	const auto dpi = screen->logicalDotsPerInch();
@@ -220,7 +220,7 @@ index 81ea4e4..a2dabb2 100644
  	const auto base = (basePair.first + basePair.second) * 0.5;
  	const auto screenScaleExact = dpi / base;
  	const auto screenScale = int(base::SafeRound(screenScaleExact * 20)) * 5;
-@@ -229,9 +229,12 @@ bool Sandbox::event(QEvent *e) {
+@@ -278,9 +278,12 @@ bool Sandbox::event(QEvent *e) {
  		if (Quitting()) {
  			return QCoreApplication::event(e);
  		}
@@ -236,7 +236,7 @@ index 81ea4e4..a2dabb2 100644
  	} else if (e->type() == QEvent::Close) {
  		Quit();
  	} else if (e->type() == DeadlockDetector::PingPongEvent::Type()) {
-@@ -245,7 +248,7 @@ bool Sandbox::event(QEvent *e) {
+@@ -294,7 +297,7 @@ bool Sandbox::event(QEvent *e) {
  void Sandbox::socketConnected() {
  	LOG(("Socket connected, this is not the first application instance, sending show command..."));
  	_secondInstance = true;
@@ -246,12 +246,12 @@ index 81ea4e4..a2dabb2 100644
  	if (qEnvironmentVariableIsSet("XDG_ACTIVATION_TOKEN")) {
  		commands += u"XDG_ACTIVATION_TOKEN:"_q + qgetenv("XDG_ACTIVATION_TOKEN").toBase64() + ';';
 diff --git a/Telegram/SourceFiles/iv/iv_controller.cpp b/Telegram/SourceFiles/iv/iv_controller.cpp
-index 87ab701..1cfc888 100644
+index ba6f2ef..5fad805 100644
 --- a/Telegram/SourceFiles/iv/iv_controller.cpp
 +++ b/Telegram/SourceFiles/iv/iv_controller.cpp
-@@ -50,7 +50,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
- #include <QtGui/QWindow>
- #include <charconv>
+@@ -35,7 +35,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
+ 
+ #include <string>
  
 -#include <ada.h>
 +#include "ada.cpp"
@@ -327,7 +327,7 @@ index f314fb0..331db8a 100644
  }
  
 diff --git a/Telegram/SourceFiles/platform/linux/integration_linux.cpp b/Telegram/SourceFiles/platform/linux/integration_linux.cpp
-index f5d9473..0c83cdd 100644
+index d0a12b1..5426a8f 100644
 --- a/Telegram/SourceFiles/platform/linux/integration_linux.cpp
 +++ b/Telegram/SourceFiles/platform/linux/integration_linux.cpp
 @@ -20,8 +20,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
@@ -353,7 +353,7 @@ index f5d9473..0c83cdd 100644
  using namespace gi::repository;
  namespace GObject = gi::repository::GObject;
  
-@@ -258,7 +263,7 @@ void LinuxIntegration::initInhibit() {
+@@ -244,7 +249,7 @@ void LinuxIntegration::initInhibit() {
  		}),
  		nullptr);
  }
@@ -363,12 +363,12 @@ index f5d9473..0c83cdd 100644
  
  std::unique_ptr<Integration> CreateIntegration() {
 diff --git a/Telegram/SourceFiles/platform/linux/main_window_linux.cpp b/Telegram/SourceFiles/platform/linux/main_window_linux.cpp
-index 3bee37b..f595170 100644
+index 803afb7..3c77171 100644
 --- a/Telegram/SourceFiles/platform/linux/main_window_linux.cpp
 +++ b/Telegram/SourceFiles/platform/linux/main_window_linux.cpp
-@@ -35,6 +35,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
- #include "base/platform/linux/base_linux_xcb_utilities.h"
- #endif // !DESKTOP_APP_DISABLE_X11_INTEGRATION
+@@ -32,6 +32,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
+ #include "ui/widgets/fields/input_field.h"
+ #include "ui/ui_utility.h"
  
 +#ifdef Q_OS_HAIKU
 +#include <base/haiku_types.h>
@@ -377,7 +377,7 @@ index 3bee37b..f595170 100644
  #include <QtCore/QSize>
  #include <QtCore/QMimeData>
  #include <QtGui/QWindow>
-@@ -149,6 +153,12 @@ void MainWindow::workmodeUpdated(Core::Settings::WorkMode mode) {
+@@ -143,6 +147,12 @@ void MainWindow::workmodeUpdated(Core::Settings::WorkMode mode) {
  	SkipTaskbar(windowHandle(), mode == WorkMode::TrayOnly);
  }
  
@@ -690,12 +690,12 @@ index 0000000..055b95d
 +} // namespace Notifications
 +} // namespace Platform
 diff --git a/Telegram/SourceFiles/platform/linux/specific_linux.cpp b/Telegram/SourceFiles/platform/linux/specific_linux.cpp
-index cc9e032..70223aa 100644
+index a5249ff..a876b2c 100644
 --- a/Telegram/SourceFiles/platform/linux/specific_linux.cpp
 +++ b/Telegram/SourceFiles/platform/linux/specific_linux.cpp
-@@ -26,6 +26,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
- #include "base/platform/linux/base_linux_xcb_utilities.h"
- #endif // !DESKTOP_APP_DISABLE_X11_INTEGRATION
+@@ -24,6 +24,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
+ #include "window/window_controller.h"
+ #include "webview/platform/linux/webview_linux_webkitgtk.h"
  
 +#ifdef Q_OS_HAIKU
 +#include <base/haiku_types.h>
@@ -704,7 +704,7 @@ index cc9e032..70223aa 100644
  #include <QtWidgets/QApplication>
  #include <QtWidgets/QSystemTrayIcon>
  #include <QtGui/QDesktopServices>
-@@ -49,6 +53,33 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
+@@ -47,6 +51,33 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
  #include <pwd.h>
  
  namespace {
@@ -738,7 +738,7 @@ index cc9e032..70223aa 100644
  
  using namespace gi::repository;
  namespace GObject = gi::repository::GObject;
-@@ -445,7 +476,7 @@ bool GenerateServiceFile(bool silent = false) {
+@@ -443,7 +474,7 @@ bool GenerateServiceFile(bool silent = false) {
  			targetPath,
  			md5Hash));
  	}
@@ -747,7 +747,7 @@ index cc9e032..70223aa 100644
  	XdgDBus::DBusProxy::new_for_bus(
  		Gio::BusType::SESSION_,
  		Gio::DBusProxyFlags::NONE_,
-@@ -461,7 +492,7 @@ bool GenerateServiceFile(bool silent = false) {
+@@ -459,7 +490,7 @@ bool GenerateServiceFile(bool silent = false) {
  
  			interface.call_reload_config(nullptr);
  		});
@@ -756,7 +756,7 @@ index cc9e032..70223aa 100644
  	return true;
  }
  
-@@ -620,6 +651,10 @@ bool AutostartSupported() {
+@@ -621,6 +652,10 @@ bool AutostartSupported() {
  }
  
  void AutostartToggle(bool enabled, Fn<void(bool)> done) {
@@ -767,7 +767,7 @@ index cc9e032..70223aa 100644
  	if (KSandbox::isFlatpak()) {
  		PortalAutostart(enabled, done);
  		return;
-@@ -647,6 +682,7 @@ void AutostartToggle(bool enabled, Fn<void(bool)> done) {
+@@ -648,6 +683,7 @@ void AutostartToggle(bool enabled, Fn<void(bool)> done) {
  	if (done) {
  		done(enabled && success);
  	}
@@ -775,7 +775,7 @@ index cc9e032..70223aa 100644
  }
  
  bool AutostartSkip() {
-@@ -699,7 +735,11 @@ QString psAppDataPath() {
+@@ -698,7 +734,11 @@ QString psAppDataPath() {
  		}
  	}
  
@@ -787,7 +787,7 @@ index cc9e032..70223aa 100644
  }
  
  void psDoCleanup() {
-@@ -796,6 +836,7 @@ bool OpenSystemSettings(SystemSettingsType type) {
+@@ -795,6 +835,7 @@ bool OpenSystemSettings(SystemSettingsType type) {
  			}
  			options.push_back(std::move(command));
  		};
@@ -795,20 +795,20 @@ index cc9e032..70223aa 100644
  		add("unity-control-center", "sound");
  		add("kcmshell6", "kcm_pulseaudio");
  		add("kcmshell5", "kcm_pulseaudio");
-@@ -805,7 +846,7 @@ bool OpenSystemSettings(SystemSettingsType type) {
+@@ -804,7 +845,7 @@ bool OpenSystemSettings(SystemSettingsType type) {
  		add("mate-volume-control");
  		add("pavucontrol-qt");
  		add("pavucontrol");
 -		add("alsamixergui");
 +		add("alsamixergui");		
  		return ranges::any_of(options, [](const Command &command) {
- 			return QProcess::startDetached(
- 				command.command,
+ 			QProcess process;
+ 			if (KSandbox::isInside()) {
 diff --git a/Telegram/SourceFiles/platform/linux/tray_linux.cpp b/Telegram/SourceFiles/platform/linux/tray_linux.cpp
-index d386316..90a9cb4 100644
+index c12a573..0b5fc43 100644
 --- a/Telegram/SourceFiles/platform/linux/tray_linux.cpp
 +++ b/Telegram/SourceFiles/platform/linux/tray_linux.cpp
-@@ -256,6 +256,7 @@ rpl::producer<> TrayEventFilter::contextMenuFilters() const {
+@@ -257,6 +257,7 @@ rpl::producer<> TrayEventFilter::contextMenuFilters() const {
  }
  
  Tray::Tray() {
@@ -816,7 +816,7 @@ index d386316..90a9cb4 100644
  	auto connection = Gio::bus_get_sync(Gio::BusType::SESSION_, nullptr);
  	if (connection) {
  		_sniWatcher = std::make_unique<base::Platform::DBus::ServiceWatcher>(
-@@ -273,6 +274,7 @@ Tray::Tray() {
+@@ -274,6 +275,7 @@ Tray::Tray() {
  				});
  			});
  	}
@@ -824,7 +824,7 @@ index d386316..90a9cb4 100644
  }
  
  void Tray::createIcon() {
-@@ -341,10 +343,12 @@ void Tray::createMenu() {
+@@ -342,10 +344,12 @@ void Tray::createMenu() {
  	if (!_menu) {
  		_menu = base::make_unique_q<QMenu>(nullptr);
  	}
@@ -865,10 +865,10 @@ index 9ee2939..8c75330 100644
      SetAudioInputDeviceById(_audioDeviceModule.get(), id);
  #endif
 diff --git a/Telegram/ThirdParty/tgcalls/tgcalls/group/GroupInstanceCustomImpl.cpp b/Telegram/ThirdParty/tgcalls/tgcalls/group/GroupInstanceCustomImpl.cpp
-index 17bfa52..e581b70 100644
+index 762d1b9..eca498d 100644
 --- a/Telegram/ThirdParty/tgcalls/tgcalls/group/GroupInstanceCustomImpl.cpp
 +++ b/Telegram/ThirdParty/tgcalls/tgcalls/group/GroupInstanceCustomImpl.cpp
-@@ -3810,7 +3810,7 @@ public:
+@@ -3817,7 +3817,7 @@ public:
      }
  
      void setAudioOutputDevice(const std::string &id) {
@@ -877,7 +877,7 @@ index 17bfa52..e581b70 100644
          _threads->getWorkerThread()->BlockingCall([&] {
              SetAudioOutputDeviceById(_audioDeviceModule.get(), id);
          });
-@@ -3818,7 +3818,7 @@ public:
+@@ -3825,7 +3825,7 @@ public:
      }
  
      void setAudioInputDevice(const std::string &id) {
@@ -886,14 +886,34 @@ index 17bfa52..e581b70 100644
          _threads->getWorkerThread()->BlockingCall([&] {
              SetAudioInputDeviceById(_audioDeviceModule.get(), id);
          });
+diff --git a/Telegram/cmake/qrhi_shaders.cmake b/Telegram/cmake/qrhi_shaders.cmake
+index 1792f89..d0f1a51 100644
+--- a/Telegram/cmake/qrhi_shaders.cmake
++++ b/Telegram/cmake/qrhi_shaders.cmake
+@@ -11,13 +11,14 @@ if (QT_VERSION_MAJOR LESS 6)
+     return()
+ endif()
+ 
+-find_program(QSB_EXECUTABLE qsb
++find_program(QSB_EXECUTABLE qsb qsb6
+     HINTS
+         "${QT_DIR}/../../../libexec"
+         "${QT_DIR}/../../../bin"
+         "${QT_DIR}/../../qt6/libexec"
+         "${QT_DIR}/../../qt6/bin"
+         "${QT_DIR}/../../../opt/qtshadertools/bin"
++        "/system/bin"
+     PATHS ENV PATH)
+ 
+ if (NOT QSB_EXECUTABLE)
 diff --git a/Telegram/cmake/td_iv.cmake b/Telegram/cmake/td_iv.cmake
-index 1d4edf9..602abf4 100644
+index e80c6c2..01c7cd8 100644
 --- a/Telegram/cmake/td_iv.cmake
 +++ b/Telegram/cmake/td_iv.cmake
-@@ -38,7 +38,6 @@ PUBLIC
-     tdesktop::td_scheme
+@@ -129,7 +129,6 @@ PUBLIC
  PRIVATE
      desktop-app::lib_webview
+     desktop-app::lib_storage
 -    desktop-app::external_ada
      tdesktop::td_lang
      tdesktop::td_ui
@@ -1011,6 +1031,21 @@ index ff70a1c..b49c8c0 100644
  }
  
  QString CurrentExecutablePath(int argc, char *argv[]) {
+diff --git a/Telegram/lib_base/base/platform/linux/base_global_shortcuts_linux.cpp b/Telegram/lib_base/base/platform/linux/base_global_shortcuts_linux.cpp
+index 93800e3..bb430b1 100644
+--- a/Telegram/lib_base/base/platform/linux/base_global_shortcuts_linux.cpp
++++ b/Telegram/lib_base/base/platform/linux/base_global_shortcuts_linux.cpp
+@@ -16,6 +16,10 @@
+ #include <QKeySequence>
+ #include <QSocketNotifier>
+ 
++#ifdef __HAIKU__
++#define RTLD_NODELETE RTLD_NOLOAD
++#endif
++
+ #include <xkbcommon/xkbcommon-keysyms.h>
+ 
+ // Declarations from the xcb-record/xcb-keysyms headers (X11 license),
 diff --git a/Telegram/lib_base/base/platform/linux/base_haptic_linux.cpp b/Telegram/lib_base/base/platform/linux/base_haptic_linux.cpp
 index e92bf6a..7082723 100644
 --- a/Telegram/lib_base/base/platform/linux/base_haptic_linux.cpp
@@ -1048,10 +1083,10 @@ index e92bf6a..7082723 100644
  
  bool IsSwipeBackEnabled() {
 diff --git a/Telegram/lib_base/base/platform/linux/base_info_linux.cpp b/Telegram/lib_base/base/platform/linux/base_info_linux.cpp
-index c703810..bfc4a44 100644
+index 36e6285..d031e88 100644
 --- a/Telegram/lib_base/base/platform/linux/base_info_linux.cpp
 +++ b/Telegram/lib_base/base/platform/linux/base_info_linux.cpp
-@@ -319,6 +319,7 @@ bool IsX11() {
+@@ -310,6 +310,7 @@ bool IsX11() {
  }
  
  bool IsWayland() {
@@ -1059,7 +1094,7 @@ index c703810..bfc4a44 100644
  	if (!qApp) {
  		static const auto result = []() -> bool {
  			struct wl_display *(*wl_display_connect)(const char *name);
-@@ -338,6 +339,7 @@ bool IsWayland() {
+@@ -329,6 +330,7 @@ bool IsWayland() {
  		}();
  		return result;
  	}
@@ -1068,10 +1103,10 @@ index c703810..bfc4a44 100644
  #if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
  #if defined QT_FEATURE_wayland && QT_CONFIG(wayland)
 diff --git a/Telegram/lib_base/base/platform/linux/base_last_input_linux.cpp b/Telegram/lib_base/base/platform/linux/base_last_input_linux.cpp
-index 9a52714..9bd332a 100644
+index e64c307..6120a6c 100644
 --- a/Telegram/lib_base/base/platform/linux/base_last_input_linux.cpp
 +++ b/Telegram/lib_base/base/platform/linux/base_last_input_linux.cpp
-@@ -16,6 +16,11 @@
+@@ -39,6 +39,11 @@ typedef struct xcb_screensaver_query_info_reply_t {
  
  #include <mutteridlemonitor/mutteridlemonitor.hpp>
  
@@ -1083,7 +1118,7 @@ index 9a52714..9bd332a 100644
  namespace base::Platform {
  namespace {
  
-@@ -83,9 +88,23 @@ std::optional<crl::time> MutterDBusLastUserInputTime() {
+@@ -127,9 +132,22 @@ std::optional<crl::time> MutterDBusLastUserInputTime() {
  	return (crl::now() - static_cast<crl::time>(std::get<1>(*result)));
  }
  
@@ -1102,11 +1137,19 @@ index 9a52714..9bd332a 100644
 +	if (haikuResult.has_value()) {
 +		return haikuResult;
 +	}
-+#endif
-+
- #ifndef DESKTOP_APP_DISABLE_X11_INTEGRATION
++#else
  	const auto xcbResult = XCBLastUserInputTime();
  	if (xcbResult.has_value()) {
+ 		return xcbResult;
+@@ -139,7 +157,7 @@ std::optional<crl::time> LastUserInputTime() {
+ 	if (mutterResult.has_value()) {
+ 		return mutterResult;
+ 	}
+-
++#endif
+ 	return std::nullopt;
+ }
+ 
 diff --git a/Telegram/lib_base/base/platform/linux/base_linux_dbus_utilities.cpp b/Telegram/lib_base/base/platform/linux/base_linux_dbus_utilities.cpp
 index 86316e9..ef0c8d5 100644
 --- a/Telegram/lib_base/base/platform/linux/base_linux_dbus_utilities.cpp
@@ -1145,6 +1188,21 @@ index fc8e694..43adaa1 100644
  } // namespace base::Platform::DBus
 +
 +#endif
+diff --git a/Telegram/lib_base/base/platform/linux/base_linux_xcb_library.cpp b/Telegram/lib_base/base/platform/linux/base_linux_xcb_library.cpp
+index b467385..fbdb6f9 100644
+--- a/Telegram/lib_base/base/platform/linux/base_linux_xcb_library.cpp
++++ b/Telegram/lib_base/base/platform/linux/base_linux_xcb_library.cpp
+@@ -8,6 +8,10 @@
+ 
+ #include "base/platform/linux/base_linux_library.h"
+ 
++#ifdef __HAIKU__
++#define RTLD_NODELETE RTLD_NOLOAD
++#endif
++
+ namespace base::Platform::XCB::Library {
+ 
+ void *LoadSymbol(const char *name) {
 diff --git a/Telegram/lib_base/base/platform/linux/base_linux_xdp_utilities.cpp b/Telegram/lib_base/base/platform/linux/base_linux_xdp_utilities.cpp
 index 6b781fb..c0dd69f 100644
 --- a/Telegram/lib_base/base/platform/linux/base_linux_xdp_utilities.cpp
@@ -1161,12 +1219,12 @@ index 6b781fb..c0dd69f 100644
  #include <QtGui/QWindow>
  
 diff --git a/Telegram/lib_base/base/platform/linux/base_power_save_blocker_linux.cpp b/Telegram/lib_base/base/platform/linux/base_power_save_blocker_linux.cpp
-index 1f6244b..c77d3da 100644
+index c2913d0..63f7e5e 100644
 --- a/Telegram/lib_base/base/platform/linux/base_power_save_blocker_linux.cpp
 +++ b/Telegram/lib_base/base/platform/linux/base_power_save_blocker_linux.cpp
-@@ -16,6 +16,10 @@
- #include "base/platform/linux/base_linux_xcb_utilities.h"
- #endif // !DESKTOP_APP_DISABLE_X11_INTEGRATION
+@@ -13,6 +13,10 @@
+ #include "base/weak_ptr.h"
+ #include "base/random.h"
  
 +#ifdef Q_OS_HAIKU
 +#include <base/haiku_types.h>
@@ -1175,6 +1233,101 @@ index 1f6244b..c77d3da 100644
  #include <QtGui/QWindow>
  
  #include <xdpinhibit/xdpinhibit.hpp>
+diff --git a/Telegram/lib_base/base/platform/linux/base_screen_reader_state_linux.cpp b/Telegram/lib_base/base/platform/linux/base_screen_reader_state_linux.cpp
+index e0d377d..9bfb6b6 100644
+--- a/Telegram/lib_base/base/platform/linux/base_screen_reader_state_linux.cpp
++++ b/Telegram/lib_base/base/platform/linux/base_screen_reader_state_linux.cpp
+@@ -37,6 +37,7 @@ constexpr auto kAlwaysOnEnvironmentVariable
+ 	return ::Platform::IsX11();
+ }
+ 
++#if defined(USE_DBUS_ACCESSIBILITY) && !defined(__HAIKU__)
+ [[nodiscard]] Gio::DBusProxyFlags StatusProxyFlags() {
+ 	return Gio::DBusProxyFlags::DO_NOT_AUTO_START_
+ 		| Gio::DBusProxyFlags::DO_NOT_AUTO_START_AT_CONSTRUCTION_;
+@@ -81,7 +82,7 @@ constexpr auto kAlwaysOnEnvironmentVariable
+ 		const AtSpi::Status &status) {
+ 	return status && status.property_screen_reader_enabled().get();
+ }
+-
++#endif
+ void Enqueue(FnMut<void()> update) {
+ 	if (Integration::Exists()) {
+ 		Integration::Instance().enterFromEventLoop(std::move(update));
+@@ -92,17 +93,22 @@ void Enqueue(FnMut<void()> update) {
+ 
+ } // namespace
+ 
++#if defined(USE_DBUS_ACCESSIBILITY) && !defined(__HAIKU__)
+ struct LinuxScreenReaderState::Private {
+ 	Gio::DBusConnection connection;
+ 	AtSpi::Status status;
+ 	std::unique_ptr<DBus::ServiceWatcher> serviceWatcher;
+ };
++#else
++struct LinuxScreenReaderState::Private {};
++#endif
+ 
+ LinuxScreenReaderState::LinuxScreenReaderState()
+ : _private(std::make_unique<Private>())
+ , _useX11ScreenReaderDetection(UseX11ScreenReaderDetection())
+ , _isActive(
+ 	_useX11ScreenReaderDetection ? AlwaysOn() : QAccessible::isActive()) {
++#if defined(USE_DBUS_ACCESSIBILITY) && !defined(__HAIKU__)
+ 	if (!_useX11ScreenReaderDetection) {
+ 		QAccessible::installActivationObserver(this);
+ 		return;
+@@ -132,12 +138,22 @@ LinuxScreenReaderState::LinuxScreenReaderState()
+ 
+ 	refreshStatusProxy();
+ 	updateActive();
++#else
++	if (!_useX11ScreenReaderDetection) {
++		return;
++	}
++
++	refreshStatusProxy();
++	updateActive();
++#endif
+ }
+ 
+ LinuxScreenReaderState::~LinuxScreenReaderState() {
++#if defined(USE_DBUS_ACCESSIBILITY) && !defined(__HAIKU__)
+ 	if (!_useX11ScreenReaderDetection) {
+ 		QAccessible::removeActivationObserver(this);
+ 	}
++#endif
+ }
+ 
+ void LinuxScreenReaderState::accessibilityActiveChanged(bool active) {
+@@ -147,6 +163,7 @@ void LinuxScreenReaderState::accessibilityActiveChanged(bool active) {
+ }
+ 
+ void LinuxScreenReaderState::refreshStatusProxy() {
++#if defined(USE_DBUS_ACCESSIBILITY) && !defined(__HAIKU__)
+ 	_private->status = {};
+ 	if (!_useX11ScreenReaderDetection
+ 		|| AlwaysOn()
+@@ -169,6 +186,7 @@ void LinuxScreenReaderState::refreshStatusProxy() {
+ 			}
+ 		});
+ 	});
++#endif
+ }
+ 
+ void LinuxScreenReaderState::updateActive() {
+@@ -177,7 +195,11 @@ void LinuxScreenReaderState::updateActive() {
+ 	} else if (AlwaysOn()) {
+ 		_isActive = true;
+ 	} else {
++#if defined(USE_DBUS_ACCESSIBILITY) && !defined(__HAIKU__)
+ 		_isActive = ReadScreenReaderEnabled(_private->status);
++#else
++		_isActive = QAccessible::isActive();
++#endif
+ 	}
+ }
+ 
 diff --git a/Telegram/lib_base/base/platform/linux/base_url_scheme_linux.cpp b/Telegram/lib_base/base/platform/linux/base_url_scheme_linux.cpp
 index 8d6a984..3eefda0 100644
 --- a/Telegram/lib_base/base/platform/linux/base_url_scheme_linux.cpp
@@ -1205,12 +1358,63 @@ index 3a4d243..514f3a7 100644
  #include "spellcheck/third_party/language_cld3.h"
  
  #include <nnet_language_identifier.h>
+diff --git a/Telegram/lib_ui/ui/accessible/ui_accessible_widget.cpp b/Telegram/lib_ui/ui/accessible/ui_accessible_widget.cpp
+index aa538f7..b4ebe2f 100644
+--- a/Telegram/lib_ui/ui/accessible/ui_accessible_widget.cpp
++++ b/Telegram/lib_ui/ui/accessible/ui_accessible_widget.cpp
+@@ -358,16 +358,22 @@ bool Widget::clear() {
+ // Attributes. Reports the container's orientation (e.g. a vertical list) so UI
+ // Automation can describe a horizontal/vertical orientation.
+ 
++#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
++    constexpr auto AccessibleOrientationAttribute = QAccessible::Attribute::Orientation;
++#else
++    constexpr auto AccessibleOrientationAttribute = static_cast<QAccessible::Attribute>(0x100d);
++#endif
++
+ QList<QAccessible::Attribute> Widget::attributeKeys() const {
+ 	auto result = QList<QAccessible::Attribute>();
+ 	if (rp()->accessibilityOrientation().has_value()) {
+-		result.append(QAccessible::Attribute::Orientation);
++		result.append(AccessibleOrientationAttribute);
+ 	}
+ 	return result;
+ }
+ 
+ QVariant Widget::attributeValue(QAccessible::Attribute key) const {
+-	if (key == QAccessible::Attribute::Orientation) {
++	if (key == AccessibleOrientationAttribute) {
+ 		if (const auto orientation = rp()->accessibilityOrientation()) {
+ 			// Plain int by design: the UIA bridge reads this back with
+ 			// QVariant::toInt(), and Qt::Orientation isn't a registered
+diff --git a/Telegram/lib_ui/ui/gl/gl_detection.cpp b/Telegram/lib_ui/ui/gl/gl_detection.cpp
+index 58c506f..e9efbd6 100644
+--- a/Telegram/lib_ui/ui/gl/gl_detection.cpp
++++ b/Telegram/lib_ui/ui/gl/gl_detection.cpp
+@@ -91,7 +91,7 @@ void CrashCheckStart() {
+ }
+ 
+ [[nodiscard]] bool OpenGLLibraryAvailable() {
+-#if !defined(Q_OS_MAC) && !defined(Q_OS_WIN)
++#if !defined(Q_OS_MAC) && !defined(Q_OS_WIN) && !defined(Q_OS_HAIKU)
+ 	static const auto available = [] {
+ 		const auto check = [](void (*tramp)(), const char *name) {
+ 			return !tramp
+@@ -108,6 +108,8 @@ void CrashCheckStart() {
+ 		return true;
+ 	}();
+ 	return available;
++#elif defined(Q_OS_HAIKU)
++	return false;
+ #else // !Q_OS_MAC && !Q_OS_WIN
+ 	return true;
+ #endif // Q_OS_MAC || Q_OS_WIN
 diff --git a/Telegram/lib_ui/ui/ui_utility.cpp b/Telegram/lib_ui/ui/ui_utility.cpp
-index 92d40e6..5dc5708 100644
+index 77c6c88..3b9557c 100644
 --- a/Telegram/lib_ui/ui/ui_utility.cpp
 +++ b/Telegram/lib_ui/ui/ui_utility.cpp
-@@ -11,6 +11,10 @@
- #include "ui/platform/ui_platform_utility.h"
+@@ -10,6 +10,10 @@
+ #include "ui/integration.h"
  #include "ui/style/style_core.h"
  
 +#ifdef Q_OS_HAIKU
@@ -1221,7 +1425,7 @@ index 92d40e6..5dc5708 100644
  #include <QtGui/QWindow>
  #include <QtGui/QtEvents>
 diff --git a/Telegram/lib_ui/ui/widgets/popup_menu.cpp b/Telegram/lib_ui/ui/widgets/popup_menu.cpp
-index 1fb9d65..7689a2b 100644
+index a09ed9f..4d4f6b9 100644
 --- a/Telegram/lib_ui/ui/widgets/popup_menu.cpp
 +++ b/Telegram/lib_ui/ui/widgets/popup_menu.cpp
 @@ -20,6 +20,10 @@
@@ -1268,10 +1472,10 @@ index 3b25c94..22e4b14 100644
  
  #include "webrtc/webrtc_device_common.h"
 diff --git a/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk.cpp b/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk.cpp
-index c0fc13e..295b378 100644
+index 7169b84..81dc239 100644
 --- a/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk.cpp
 +++ b/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk.cpp
-@@ -837,7 +837,7 @@ void Instance::dataRequest(
+@@ -1593,7 +1593,7 @@ void Instance::dataRequest(
  		socket->write("HTTP/1.1 ");
  		socket->write(partial ? "206 Partial Content\r\n" : "200 OK\r\n");
  
@@ -1281,10 +1485,10 @@ index c0fc13e..295b378 100644
  		socket->write("Accept-Ranges: bytes\r\n");
  		socket->write("Cache-Control: no-store\r\n");
 diff --git a/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk_library.cpp b/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk_library.cpp
-index d0af014..4c38a6e 100644
+index a3b0525..4fc21e8 100644
 --- a/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk_library.cpp
 +++ b/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk_library.cpp
-@@ -8,6 +8,10 @@
+@@ -8,9 +8,16 @@
  
  #include "base/platform/linux/base_linux_library.h"
  
@@ -1294,9 +1498,23 @@ index d0af014..4c38a6e 100644
 +
  namespace Webview::WebKitGTK::Library {
  
- ResolveResult Resolve(const Platform &platform) {
+ ResolveResult Resolve(Platform platform, WindowMode mode) {
++#ifdef __HAIKU__
++	return ResolveResult::NoLibrary;
++#else
+ 	const auto gtkPlug = (platform == Platform::X11)
+ 		&& (mode != WindowMode::External);
+ 	const auto lib = (!gtkPlug
+@@ -155,6 +162,7 @@ ResolveResult Resolve(Platform platform, WindowMode mode) {
+ 	return gtk_init_check(0, 0)
+ 		? ResolveResult::Success
+ 		: ResolveResult::CantInit;
++#endif
+ }
+ 
+ } // namespace Webview::WebKitGTK::Library
 diff --git a/cmake/external/CMakeLists.txt b/cmake/external/CMakeLists.txt
-index d370526..7224f6b 100644
+index ce7e67d..85bfcb3 100644
 --- a/cmake/external/CMakeLists.txt
 +++ b/cmake/external/CMakeLists.txt
 @@ -11,7 +11,7 @@ macro(add_checked_subdirectory name)
@@ -1308,9 +1526,9 @@ index d370526..7224f6b 100644
  add_checked_subdirectory(angle)
  add_checked_subdirectory(auto_updates)
  add_checked_subdirectory(boost)
-@@ -19,7 +19,7 @@ if (add_cld3_library)
-     add_checked_subdirectory(cld3)
+@@ -20,7 +20,7 @@ if (add_cld3_library)
  endif()
+ add_checked_subdirectory(cmark_gfm)
  add_checked_subdirectory(crash_reports)
 -if (LINUX)
 +if (LINUX AND NOT HAIKU)
@@ -1333,38 +1551,21 @@ index fdbc4b0..4aab9ea 100644
      set(protoc_executable protobuf::protoc)
      set(protobuf_lib protobuf::libprotobuf-lite)
  elseif (WIN32)
--- 
-2.52.0
-
-
-From b78b116eddc2d498f488d61ff6a40e027dc46d05 Mon Sep 17 00:00:00 2001
-From: Gerasim Troeglazov <3dEyes@gmail.com>
-Date: Wed, 15 Apr 2026 10:11:41 +1000
-Subject: Disable webview
-
-
-diff --git a/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk_library.cpp b/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk_library.cpp
-index 4c38a6e..7793829 100644
---- a/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk_library.cpp
-+++ b/Telegram/lib_webview/webview/platform/linux/webview_linux_webkitgtk_library.cpp
-@@ -15,6 +15,9 @@
- namespace Webview::WebKitGTK::Library {
+diff --git a/cmake/external/qt/qt_static_plugins/hime/hime_im_client/hime_im_client_helper.cpp b/cmake/external/qt/qt_static_plugins/hime/hime_im_client/hime_im_client_helper.cpp
+index 54edca6..f554833 100644
+--- a/cmake/external/qt/qt_static_plugins/hime/hime_im_client/hime_im_client_helper.cpp
++++ b/cmake/external/qt/qt_static_plugins/hime/hime_im_client/hime_im_client_helper.cpp
+@@ -6,6 +6,10 @@
+ //
+ #include "base/platform/linux/base_linux_library.h"
  
- ResolveResult Resolve(const Platform &platform) {
 +#ifdef __HAIKU__
-+	return ResolveResult::NoLibrary;
-+#else
- 	const auto lib = (platform != Platform::X11
- 			? base::Platform::LoadLibrary("libwebkitgtk-6.0.so.4", RTLD_NODELETE)
- 			: nullptr)
-@@ -109,6 +112,7 @@ ResolveResult Resolve(const Platform &platform) {
- 	return gtk_init_check(0, 0)
- 		? ResolveResult::Success
- 		: ResolveResult::CantInit;
++#define RTLD_NODELETE RTLD_NOLOAD
 +#endif
- }
- 
- } // namespace Webview::WebKitGTK::Library
++
+ typedef unsigned long KeySym;
+ typedef struct _XDisplay Display;
+ typedef unsigned long Window;
 -- 
-2.52.0
+2.54.0
 

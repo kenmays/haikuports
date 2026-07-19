@@ -3,9 +3,9 @@ DESCRIPTION="Unofficial build of the original Telegram client for Haiku."
 HOMEPAGE="https://www.telegram.org/"
 COPYRIGHT="2013-2026 Telegram"
 LICENSE="GNU GPL v3"
-REVISION="2"
+REVISION="1"
 SOURCE_URI="https://github.com/telegramdesktop/tdesktop/releases/download/v$portVersion/tdesktop-$portVersion-full.tar.gz"
-CHECKSUM_SHA256="5d3ba64c0d3e27468993d2376c68021152ea9c9e34ebadd8bee66a1e85e9d163"
+CHECKSUM_SHA256="75c6635b80fbc670e3253bab61ba0847b83a860537418cec2897095c7c0c330b"
 SOURCE_FILENAME="tdesktop-$portVersion-full.tar.gz"
 SOURCE_DIR="tdesktop-$portVersion-full"
 SOURCE_URI_2="https://github.com/ada-url/ada/releases/download/v2.9.0/singleheader.zip"
@@ -108,6 +108,7 @@ BUILD_REQUIRES="
 	devel:libQt6Core$secondaryArchSuffix
 	devel:libQt6Gui$secondaryArchSuffix
 	devel:libQt6Network$secondaryArchSuffix
+	devel:libQt6ShaderTools$secondaryArchSuffix
 	devel:libQt6Svg$secondaryArchSuffix
 	devel:libQt6Widgets$secondaryArchSuffix
 	devel:librapidjson$secondaryArchSuffix
@@ -145,6 +146,7 @@ BUILD_PREREQUIRES="
 	cmd:patch
 	cmd:pkg_config$secondaryArchSuffix
 	cmd:python3.10
+	cmd:qsb6$secondaryArchSuffix
 	cmd:sed
 	cmd:xargs
 	cmd:yasm
