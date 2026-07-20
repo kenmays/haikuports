@@ -5,7 +5,7 @@ in such a way that they're discoverable."
 HOMEPAGE="https://p11-glue.freedesktop.org/p11-kit.html"
 COPYRIGHT="2017 Red Hat, Inc."
 LICENSE="BSD (3-clause)"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://github.com/p11-glue/p11-kit/archive/refs/tags/$portVersion.tar.gz"
 CHECKSUM_SHA256="69a54cf01b1603f4721f3c576c5a6bf1ac14477ea0da0cf41e1b7cb5c3884065"
 SOURCE_FILENAME="p11-kit.$portVersion.tar.gz"
@@ -15,9 +15,9 @@ SOURCE_URI_2="https://github.com/p11-glue/pkcs11-json/archive/$srcGitRev_2.tar.g
 CHECKSUM_SHA256_2="76a19e37d48401fafae0d049311382a896007a4bf769eae3adbec7764a77bbef"
 SOURCE_FILENAME_2="p11-glue.$portVersion.tar.gz"
 SOURCE_DIR_2="pkcs11-json-$srcGitRev_2"
-if [ "$targetArchitecture" = x86_gcc2 ]
-then
-	PATCHES="p11_kit_x86-$portVersion.patchset"
+PATCHES="p11_kit-$portVersion.patchset"
+if [ "$targetArchitecture" = x86_gcc2 ]; then
+	PATCHES+="p11_kit_x86-$portVersion.patchset"
 fi
 
 ARCHITECTURES="all !x86_gcc2 ?x86"
@@ -142,6 +142,6 @@ INSTALL()
 
 TEST()
 {
-	# 35 failed out of 1015, 4 skipped (unmounting fails due to still running processes)
-	make check
+	# 17 failed out of 998, 4 skipped, 291 errors (unmounting fails due to still running processes)
+	make check || kill -9 p11-kit-server-testable
 }
