@@ -22,7 +22,7 @@ if [ "$targetArchitecture" = x86_gcc2 ]; then
 	"
 fi
 
-ARCHITECTURES="all"
+ARCHITECTURES="all !x86_gcc2"
 SECONDARY_ARCHITECTURES="x86"
 
 commandBinDir=$binDir
