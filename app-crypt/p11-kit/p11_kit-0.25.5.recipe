@@ -17,7 +17,9 @@ SOURCE_FILENAME_2="p11-glue.$portVersion.tar.gz"
 SOURCE_DIR_2="pkcs11-json-$srcGitRev_2"
 PATCHES="p11_kit-$portVersion.patchset"
 if [ "$targetArchitecture" = x86_gcc2 ]; then
-	PATCHES+="p11_kit_x86-$portVersion.patchset"
+	PATCHES+="
+		p11_kit_x86-$portVersion.patchset
+	"
 fi
 
 ARCHITECTURES="all !x86_gcc2 ?x86"
