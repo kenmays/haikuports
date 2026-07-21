@@ -31,7 +31,7 @@ Queue manager."
 HOMEPAGE="https://www.clementine-player.org/"
 COPYRIGHT="2010-present David Sansome, John Maguire, Arnaud Bienner"
 LICENSE="GNU GPL v3"
-REVISION="5"
+REVISION="6"
 portVer="`echo $portVersion | sed 's/\_/-/g'`"
 SOURCE_URI="https://github.com/clementine-player/Clementine/releases/download/${portVer}/clementine-${portVer}.tar.xz"
 CHECKSUM_SHA256="2de22c6de0cfa41bcab8a07338b4f74352b25223e065a96eae996fd49bc0e0b5"
@@ -141,7 +141,7 @@ BUILD()
 		-DENABLE_UDISKS2=OFF \
 		-DENABLE_VISUALISATIONS=ON \
 		-DENABLE_WIIMOTEDEV=OFF \
-		-DFORCE_GIT_REVISION=ON \
+REVISION="6"
 		-DUSE_SYSTEM_PROJECTM=OFF
 	make $jobArgs
 }

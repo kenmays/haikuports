@@ -20,7 +20,7 @@ COPYRIGHT="2010-2026 KDE Organisation
 	2016 Filipe Saraiva
 	2009-2015 Alexander Rieder"
 LICENSE="GNU GPL v2"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://download.kde.org/stable/release-service/$portVersion/src/cantor-$portVersion.tar.xz"
 CHECKSUM_SHA256="316392b4b0c7651bf861f8afb2b1438153471e3b421994da121b8d387c5e4b0b"
 SOURCE_DIR="cantor-$portVersion"

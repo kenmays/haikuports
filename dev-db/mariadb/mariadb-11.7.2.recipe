@@ -6,7 +6,7 @@ licensed open SQL server in the industry."
 HOMEPAGE="https://www.mariadb.org/"
 COPYRIGHT="2009-2025 MariaDB Foundation"
 LICENSE="GNU GPL v2"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://github.com/MariaDB/server/archive/refs/tags/mariadb-11.7.2.tar.gz"
 CHECKSUM_SHA256="63abb60682d7c62f0195e8aa85301775af11ef0b7e700775dd8f232068fbe448"
 

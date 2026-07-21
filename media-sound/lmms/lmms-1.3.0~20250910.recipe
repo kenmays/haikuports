@@ -9,7 +9,7 @@ HOMEPAGE="http://lmms.io/"
 COPYRIGHT="2004-2020 Tobias Doerffel et al.
 	2008-2025 LMMS Developers"
 LICENSE="GNU GPL v2"
-REVISION="1"
+REVISION="2"
 srcGitRev="2eea79bdd349a0b385c9a371e0dc6c8dccfc5b6d"
 SOURCE_URI="https://github.com/LMMS/lmms/archive/$srcGitRev.tar.gz"
 CHECKSUM_SHA256="129dd0ae3e0b12a65b5d56e9c5348c0c65f86285df66e2e1b0e9ed0c18a7bc7f"

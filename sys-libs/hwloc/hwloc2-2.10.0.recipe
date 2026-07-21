@@ -28,7 +28,7 @@ COPYRIGHT="2004-2006 The Trustees of Indiana University and Indiana \
 		(RIST)
 	2015-2016 Intel, Inc."
 LICENSE="BSD (3-clause)"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://download.open-mpi.org/release/hwloc/v${portVersion%.*}/hwloc-$portVersion.tar.bz2"
 CHECKSUM_SHA256="0305dd60c9de2fbe6519fe2a4e8fdc6d3db8de574a0ca7812b92e80c05ae1392"
 SOURCE_DIR="hwloc-$portVersion"

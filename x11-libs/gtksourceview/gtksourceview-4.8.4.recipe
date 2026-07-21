@@ -8,7 +8,7 @@ HOMEPAGE="https://wiki.gnome.org/Projects/GtkSourceView/"
 COPYRIGHT="Christian Hergert
 Sebastien Wilmet"
 LICENSE="GNU LGPL v2.1"
-REVISION="2"
+REVISION="3"
 SOURCE_URI="https://gitlab.gnome.org/GNOME/gtksourceview/-/archive/$portVersion/gtksourceview-$portVersion.tar.gz"
 SOURCE_DIR="gtksourceview-$portVersion"
 CHECKSUM_SHA256="db84d9818ced6311ce27df5bf7f36f83ab14646fbace026cc0b0ba0308bcfb68"

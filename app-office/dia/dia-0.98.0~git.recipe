@@ -12,7 +12,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Dia"
 COPYRIGHT="1998-2011 The Free Software Foundation and the authors
 	2018-2021 Zander Brown et al"
 LICENSE="GNU GPL v2"
-REVISION="1"
+REVISION="2"
 srcGitRev="e62879c0690111b585f44c0544cc9f3db6320ef9"
 #srcGitRev="ea793ab3eb2e5dc50e5191d782d222e15de1eccc" #libxml2 >= 2.14.0
 SOURCE_URI="https://gitlab.gnome.org/GNOME/dia/-/archive/$srcGitRev.tar.gz"

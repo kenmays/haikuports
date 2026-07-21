@@ -21,7 +21,7 @@ COPYRIGHT="2008-2012 Kristian Høgsberg
 	2011 Benjamin Franzke
 	2012 Collabora, Ltd."
 LICENSE="MIT"
-REVISION="3"
+REVISION="4"
 srcGitRev="149e9d7e1bab3b66a93f92c19c8056db547dd066"
 SOURCE_URI="https://github.com/X547/wayland/archive/$srcGitRev.tar.gz"
 CHECKSUM_SHA256="c7cbbcdcedb2e89086351f6d03a79a561ad486c1471d598a3959643fe7f94348"

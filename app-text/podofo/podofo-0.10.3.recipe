@@ -7,7 +7,7 @@ COPYRIGHT="2005-2014 Dominik Seichter
 	2008 Craig Ringer"
 LICENSE="GNU GPL v2
 	GNU LGPL v2.1"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://github.com/podofo/podofo/archive/refs/tags/$portVersion.tar.gz"
 CHECKSUM_SHA256="4be2232643f9e9dd7fbb02894d5a0394c3ca2826aab179654c2cc751074825ec"
 srcGitRev_2="02cbc04e685bbed6c540fe70e617e721dd8114b1"

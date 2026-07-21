@@ -20,7 +20,7 @@ HOMEPAGE="https://notroj.github.io/neon/
 	https://github.com/notroj/neon"
 COPYRIGHT="1999-2021 Joe Orton and others"
 LICENSE="GNU LGPL v2"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://notroj.github.io/neon/neon-$portVersion.tar.gz"
 CHECKSUM_SHA256="70cc7f2aeebde263906e185b266e04e0de92b38e5f4ecccbf61e8b79177c2f07"
 PATCHES="neon-$portVersion.patchset"

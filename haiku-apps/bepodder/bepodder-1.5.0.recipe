@@ -23,7 +23,7 @@ HOMEPAGE="https://github.com/HaikuArchives/BePodder"
 COPYRIGHT="2006-2014 Funky Idea Software
 	2015-2018 HaikuArchives Team"
 LICENSE="MIT"
-REVISION="3"
+REVISION="4"
 srcGitRev="17a9e0d3f74d8399974585bdfa9b03dfd82eb1dd"
 SOURCE_URI="$HOMEPAGE/archive/$srcGitRev.tar.gz"
 CHECKSUM_SHA256="b4cb279abdb3451c6ebfdd6c7cbafae89939ded9b742e3dc2ed479aefc57b607"

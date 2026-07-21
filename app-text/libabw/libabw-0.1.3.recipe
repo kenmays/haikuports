@@ -4,7 +4,7 @@ documents."
 HOMEPAGE="https://wiki.documentfoundation.org/DLP/Libraries/libabw"
 COPYRIGHT="Fridrich Strba, David Tardon"
 LICENSE="MPL v2.0"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://dev-www.libreoffice.org/src/libabw/libabw-$portVersion.tar.xz"
 CHECKSUM_SHA256="e763a9dc21c3d2667402d66e202e3f8ef4db51b34b79ef41f56cacb86dcd6eed"
 

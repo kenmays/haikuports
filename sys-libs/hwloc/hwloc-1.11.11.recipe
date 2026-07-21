@@ -27,7 +27,7 @@ Stuttgart
 (RIST)
 	2015-2016 Intel, Inc."
 LICENSE="BSD (3-clause)"
-REVISION="3"
+REVISION="4"
 SOURCE_URI="https://www.open-mpi.org/software/hwloc/v1.11/downloads/hwloc-$portVersion.tar.bz2"
 CHECKSUM_SHA256="16a061cabd9319eb8cf9c6705c79142520b5b38d28a3f2a1d832bcb2fb7ea5fd"
 PATCHES="hwloc-$portVersion.patchset"

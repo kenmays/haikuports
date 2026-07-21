@@ -18,7 +18,7 @@ HOMEPAGE="https://www.qgis.org/"
 COPYRIGHT="QGIS Development Team"
 LICENSE="GNU GPL v2
 	GNU GPL v3"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://download.qgis.org/downloads/qgis-$portVersion.tar.bz2"
 CHECKSUM_SHA256="f1e4d52789b65cd5678a6e9b9c10bdf04df930b847a827bbf8f873db98019f2f"
 PATCHES="qgis-$portVersion.patchset"

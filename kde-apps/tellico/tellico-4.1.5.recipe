@@ -10,7 +10,7 @@ HOMEPAGE="https://tellico-project.org/
 COPYRIGHT="2001-2025 Robby Stephenson"
 LICENSE="GNU GPL v2
 	GNU GPL v3"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://tellico-project.org/files/tellico-$portVersion.tar.xz"
 CHECKSUM_SHA256="de85c600a725926000308622d96ee7bed1123af07f971f237841fb4a02240b36"
 SOURCE_DIR="tellico-$portVersion"

@@ -13,7 +13,7 @@ more flexible and independent from the graphics system's resolution."
 HOMEPAGE="http://www.tecgraf.puc-rio.br/iup/"
 COPYRIGHT="1994-2013 Tecgraf, PUC-Rio."
 LICENSE="MIT"
-REVISION="2"
+REVISION="3"
 SOURCE_URI="http://downloads.sourceforge.net/project/iup/3.8/Docs%20and%20Sources/iup-3.8_Sources.zip" # The tar.gz has permission problems.
 CHECKSUM_SHA256="8030c4f35c3a3f096e6552cecb600d8ee95c9c379c76368d99fa6ffc6ebc8b5c"
 SOURCE_DIR="iup"

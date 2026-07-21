@@ -12,7 +12,7 @@ This package also supports the following protocols:
 HOMEPAGE="https://invent.kde.org/network/kio-extras/"
 COPYRIGHT="2010-2026 KDE Organisation"
 LICENSE="GNU LGPL v2"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://download.kde.org/stable/release-service/$portVersion/src/kio-extras-$portVersion.tar.xz"
 CHECKSUM_SHA256="0abc1d61d03d3ebb04c05840d5910475f46abf97efef65e354c13c12a1c31fd2"
 SOURCE_DIR="kio-extras-$portVersion"

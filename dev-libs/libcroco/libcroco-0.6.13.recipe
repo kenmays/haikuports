@@ -8,7 +8,7 @@ xml/css rendering engine.
 HOMEPAGE="https://git.gnome.org/browse/libcroco/"
 COPYRIGHT="2003-2004 Dodji Seketeli"
 LICENSE="GNU LGPL v2.1"
-REVISION="2"
+REVISION="3"
 SOURCE_URI="https://ftp.gnome.org/pub/gnome/sources/libcroco/0.6/libcroco-$portVersion.tar.xz"
 CHECKSUM_SHA256="767ec234ae7aa684695b3a735548224888132e063f92db585759b422570621d4"
 

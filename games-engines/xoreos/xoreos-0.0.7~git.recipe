@@ -17,7 +17,7 @@ with the package, especially the sample configuration, to add game-specific path
 HOMEPAGE="https://xoreos.org/"
 COPYRIGHT="2010-2025 xoreos Team"
 LICENSE="GNU GPL v3"
-REVISION="2"
+REVISION="3"
 srcGitRev="374f800c8def04bc9780fa6c4a0c55bcf6138e05"
 SOURCE_URI="https://github.com/xoreos/xoreos/archive/$srcGitRev.zip"
 CHECKSUM_SHA256="bdb531e9727430830704c4ad885027abe64765485849cc531bf2cdba71f20c67"

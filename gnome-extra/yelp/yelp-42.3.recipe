@@ -11,7 +11,7 @@ HOMEPAGE="https://apps.gnome.org/Yelp/"
 COPYRIGHT="David King
 	Shaun McCance"
 LICENSE="GNU GPL v2"
-REVISION="2"
+REVISION="3"
 SOURCE_URI="https://gitlab.gnome.org/GNOME/yelp/-/archive/$portVersion/yelp-$portVersion.tar.bz2"
 CHECKSUM_SHA256="cc487a93b6bb9cd5883603ca5db6340449b417dbb429f3be37231f05d7fe514b"
 ADDITIONAL_FILES="yelp.rdef.in"

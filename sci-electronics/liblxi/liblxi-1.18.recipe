@@ -3,7 +3,7 @@ DESCRIPTION="An Open source library to interface with LXI compatible instruments
 HOMEPAGE="https://github.com/lxi-tools/liblxi"
 COPYRIGHT="Martin Lund"
 LICENSE="BSD (3-clause)"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://github.com/lxi-tools/liblxi/releases/download/v$portVersion/liblxi-$portVersion.tar.xz"
 CHECKSUM_SHA256="d24b4f5d3a909672e3df7b55d6dc2b03043b013ae25cfbf35cf079ac260b5297"
 

@@ -8,7 +8,7 @@ enhance your productivity with GIMP thanks to many customization options and \
 HOMEPAGE="https://www.gimp.org/"
 COPYRIGHT="The GIMP Team"
 LICENSE="GNU GPL v3"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://download.gimp.org/mirror/pub/gimp/v${portVersion%.*}/gimp-$portVersion.tar.xz"
 CHECKSUM_SHA256="7312bc53e9c6d2d0056ca7b93f1c6b98707946dd934f714c21b8746ecb601588"
 PATCHES="gimp-$portVersion.patchset"

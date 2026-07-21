@@ -13,7 +13,7 @@ data from molecular modeling, chemistry, solid-state materials, biochemistry, or
 HOMEPAGE="http://openbabel.org/"
 COPYRIGHT="2023 The Open Babel Team"
 LICENSE="GNU GPL v2"
-REVISION="2"
+REVISION="3"
 openbabelVersion=`echo $portVersion | sed 's/\./-/g'`
 SOURCE_URI="https://github.com/openbabel/openbabel/archive/refs/tags/openbabel-$openbabelVersion.tar.gz"
 CHECKSUM_SHA256="c97023ac6300d26176c97d4ef39957f06e68848d64f1a04b0b284ccff2744f02"

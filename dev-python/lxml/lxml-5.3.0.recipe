@@ -13,7 +13,7 @@ LICENSE="BSD (3-clause)
 	ElementTree
 	GNU GPL v2
 	PSF-2"
-REVISION="4"
+REVISION="5"
 SOURCE_URI="https://github.com/lxml/lxml/releases/download/lxml-$portVersion/lxml-$portVersion.tar.gz"
 CHECKSUM_SHA256="4e109ca30d1edec1ac60cdbe341905dc3b8f55b16855e03a54aaf59e51ec8c6f"
 SOURCE_DIR="lxml-$portVersion"

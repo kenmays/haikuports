@@ -11,7 +11,7 @@ meta-data."
 HOMEPAGE="https://github.com/apple-oss-distributions/xar"
 COPYRIGHT="2005 Rob Braun"
 LICENSE="BSD (3-clause)"
-REVISION="1"
+REVISION="2"
 shortVersion=${portVersion#*~} # get substring after ~
 SOURCE_URI="https://github.com/apple-oss-distributions/xar/archive/refs/tags/xar-$shortVersion.tar.gz"
 CHECKSUM_SHA256="9cee4f80b96cf592ccc545a4fdd51e4da4a5bd3b4734901637d67b043eff3c75"
