@@ -11,15 +11,15 @@ Key Features:
 * Cross-platform: Available for Windows, macOS, Linux, Android and Haiku
 * Modern: Regular updates to stay current with web standards"
 HOMEPAGE="https://www.waterfox.net/"
-COPYRIGHT="1995-2025 Mozilla Developers, BrowserWorks"
+COPYRIGHT="1995-2026 Mozilla Developers, BrowserWorks"
 LICENSE="MPL v2.0"
 REVISION="1"
 SOURCE_URI="https://github.com/BrowserWorks/Waterfox/archive/refs/tags/$portVersion.tar.gz"
-CHECKSUM_SHA256="9c141c32d8fef0863fce37e4c8bfb9c10ed9e4067c495bbd87f416454e941255"
+CHECKSUM_SHA256="aa1852431bc42b72b2d9101bdfb15f21b6e21db8c87fe54b530972459cc1e49e"
 SOURCE_DIR="waterfox-$portVersion"
-srcGitRev="5889642a59bf99590ff704624ee4e0b172e6b361"
+srcGitRev="a2e5c9bf6e41c5d23e645d89ac61009383e4ace9"
 SOURCE_URI_2="https://github.com/BrowserWorks/l10n/archive/$srcGitRev.tar.gz"
-CHECKSUM_SHA256_2="9f8410b8c264ddf0e1ef67820ddd3a914bae84563c41bf4e239b0b38597c33c7"
+CHECKSUM_SHA256_2="e3f532fb33a31233a9c24e6f649cfaf77c2d1a0d0d916960c7c1f3a6418db8b7"
 SOURCE_DIR_2="l10n-$srcGitRev"
 
 PATCHES="
@@ -81,7 +81,7 @@ BUILD_REQUIRES="
 	devel:libzstd
 	"
 BUILD_PREREQUIRES="
-	llvm20
+	llvm21
 	nodejs20
 	rust_bin
 	cmd:autoconf_2.13
@@ -91,12 +91,11 @@ BUILD_PREREQUIRES="
 	cmd:gcc
 	cmd:git
 	cmd:gn
-	cmd:lld >= 20
+	cmd:lld >= 21
 	cmd:m4
 	cmd:make
 	cmd:nasm
 	cmd:perl
-	cmd:pip3
 	cmd:pkg_config
 	cmd:python3
 	cmd:tar
@@ -104,6 +103,15 @@ BUILD_PREREQUIRES="
 	cmd:xargs
 	cmd:zip
 	"
+
+PATCH ()
+{
+	find "$sourceDir/third_party/rust/" -name ".cargo-checksum.json" | while read -r file; do
+		printf '{"files":{}}' > "$file"
+	done
+
+	sed -i '/^checksum =/d' $sourceDir/Cargo.lock
+}
 
 BUILD()
 {
@@ -121,8 +129,10 @@ BUILD()
 	rm -rf waterfox/browser/locales
 	ln -s $sourceDir2 waterfox/browser/locales
 
-	export DISABLE_ASLR=1
+	#export DISABLE_ASLR=1
 	export MOZBUILD_STATE_PATH="$sourceDir/.buildstate"
+
+	python3 -m ensurepip --default-pip
 
 	./mach -vv \
 		--no-interactive bootstrap \
@@ -139,7 +149,7 @@ BUILD()
 
 INSTALL()
 {
-	export DISABLE_ASLR=1
+	#export DISABLE_ASLR=1
 	export MOZBUILD_STATE_PATH="$sourceDir/.buildstate"
 
 	./mach install
