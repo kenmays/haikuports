@@ -43,6 +43,7 @@ BUILD_PREREQUIRES="
 
 BUILD()
 {
+	export GOMAXPROCS=2
 	export GOROOT_BOOTSTRAP=$sourceDir2
 	export GOROOT_FINAL=$developLibDir/go
 	export GOCACHE=/tmp
