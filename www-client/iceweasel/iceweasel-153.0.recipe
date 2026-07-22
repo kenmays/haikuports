@@ -7,7 +7,7 @@ COPYRIGHT="1995-2026 Mozilla Developers and Contributors"
 LICENSE="MPL v2.0"
 REVISION="1"
 SOURCE_URI="https://ftp.mozilla.org/pub/firefox/releases/${portVersion}/source/firefox-${portVersion}.source.tar.xz"
-CHECKSUM_SHA256="ea220c4f8d19d4edaa20e6dadfd3c4aeb07dbed017ade2828fd814d660660f0e"
+CHECKSUM_SHA256="bc510f74c8c4c692d31e559aeb5850849d13bc98214ac81e004f66f819a55522"
 SOURCE_DIR="firefox-$portVersion"
 PATCHES="
 	iceweasel-$portVersion.patchset
@@ -137,7 +137,7 @@ BUILD()
 
 INSTALL()
 {
-	export DISABLE_ASLR=1
+#	export DISABLE_ASLR=1
 	export MOZBUILD_STATE_PATH="$sourceDir/.mozconfig"
 
 	./mach install
@@ -168,7 +168,7 @@ INSTALL()
 	local APP_SIGNATURE="application/x-vnd.iceweasel"
 	local MAJOR="`echo "$portVersion" | cut -d. -f1`"
 	local MIDDLE="`echo "$portVersion" | cut -d. -f2`"
-	local MINOR="`echo "$portVersion" | cut -d. -f3`"
+	local MINOR="0"
 	local LONG_INFO="$SUMMARY"
 	sed \
 		-e "s|@APP_SIGNATURE@|$APP_SIGNATURE|" \
