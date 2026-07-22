@@ -6,7 +6,7 @@ COPYRIGHT="2017-2026 The Hugo Authors"
 LICENSE="Apache v2"
 REVISION="1"
 SOURCE_URI="https://github.com/gohugoio/hugo/archive/v$portVersion.tar.gz"
-CHECKSUM_SHA256="4fc3aecd14bf24bc8a18eb3337465640fecad91c83876fe26ba5fa1ae9fb6f1e"
+CHECKSUM_SHA256="4d32803c88e76179bc48cf640821977dd1cd83a8aa64ee17766557a15e538825"
 
 ARCHITECTURES="?x86_64"
 
@@ -31,7 +31,7 @@ BUILD()
 	export GOPROXY=direct GOPATH=$sourceDir/../go GOROOT=/system/develop/lib/go GOSUMDB=off GOCACHE=$sourceDir/../gocache
 	export GOFLAGS="-trimpath -mod=readonly -modcacherw"
 	go mod edit -replace golang.org/x/sys=github.com/korli/sys_haiku@master-haiku \
-		-replace github.com/tetratelabs/wazero=github.com/korli/wazero_haiku@37996e2 \
+		-replace github.com/tetratelabs/wazero=github.com/korli/wazero_haiku@9efddd0 \
 		-replace github.com/rogpeppe/go-internal=github.com/korli/go-internal_haiku@6c71f5e8794 \
 		-replace github.com/mattn/go-isatty=github.com/korli/go-isatty_haiku@72d89686b7 \
 		-replace github.com/spf13/afero=github.com/korli/afero_haiku@67be62a78797 \
