@@ -4,13 +4,13 @@ build system."
 HOMEPAGE="https://mesonbuild.com/"
 COPYRIGHT="2013-2026 The Meson development team"
 LICENSE="Apache v2"
-REVISION="1"
+REVISION="2"
 SOURCE_URI="https://github.com/mesonbuild/meson/releases/download/$portVersion/meson-$portVersion.tar.gz"
 CHECKSUM_SHA256="6788ae299979643f8d841bcaf64352558436cae45a0355148a3aeeccf7913866"
 PATCHES="meson-$portVersion.patchset
 	15739.patch"
 
-pythonVersion=3.10
+pythonVersion=3.14
 pythonPackage=python${pythonVersion//.}
 
 ARCHITECTURES="any"
