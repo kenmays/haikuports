@@ -12,7 +12,7 @@ COPYRIGHT="1995-2026 Mozilla Developers and Contributors"
 LICENSE="MPL v2.0"
 REVISION="1"
 SOURCE_URI="https://github.com/threedeyes/Gecko4Haiku/releases/download/$portVersion/librewolf-${portVersion}-1.en-US.haiku-x86_64.tar.xz#noarchive"
-CHECKSUM_SHA256="1ef22bb6d2cc0a96c30778a68645380bf949a2f56f2ed8eebd4c6b2786bbc23a"
+CHECKSUM_SHA256="e685527afb918fb1ffa2b9cd1a9088a3950f209ac88e003c2cf7eea123de0668"
 PATCHES="librewolf_launcher-$portVersion.patchset"
 ADDITIONAL_FILES="
 	librewolf.rdef.in
@@ -95,7 +95,7 @@ INSTALL()
 	local APP_SIGNATURE="application/x-vnd.librewolf"
 	local MAJOR="`echo "$portVersion" | cut -d. -f1`"
 	local MIDDLE="`echo "$portVersion" | cut -d. -f2`"
-	local MINOR="`echo "$portVersion" | cut -d. -f3`"
+	local MINOR="0"
 	local LONG_INFO="$SUMMARY"
 	sed \
 		-e "s|@APP_SIGNATURE@|$APP_SIGNATURE|" \
