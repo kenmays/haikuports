@@ -11,6 +11,7 @@ LICENSE="GNU LGPL v2
 	MIT"
 REVISION="2"
 
+
 SOURCE_URI="https://codeberg.org/haiku/haikuwebkit/releases/download/HaikuWebKit-$portVersion/haikuwebkit-$portVersion.tar.xz"
 CHECKSUM_SHA256="3d22cd1f88fb663344f8fff5ce40d3d5f82e92535ff3be3c5feebb3dce5735f5"
 SOURCE_DIR="haikuwebkit"
