@@ -24,7 +24,7 @@ COPYRIGHT="1988-1998 The Regents of the University of California
 LICENSE="BSD (3-clause)"
 REVISION="1"
 SOURCE_URI="http://www.tcpdump.org/release/libpcap-$portVersion.tar.xz"
-CHECKSUM_SHA256="ec97d1206bdd19cb6bdd043eaa9f0037aa732262ec68e070fd7c7b5f834d5dfc"
+CHECKSUM_SHA256="68fa62cffb974f4275641ce14c2e2d75739251f30e00e6a0900903b247d76a03"
 
 ARCHITECTURES="all !x86_gcc2"
 SECONDARY_ARCHITECTURES="x86"
