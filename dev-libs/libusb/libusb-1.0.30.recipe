@@ -4,7 +4,7 @@ It is intended to be used by developers to facilitate the production of \
 applications that communicate with USB hardware.
 
 - portable: Using a single cross-platform API, it provides access to USB \
-devices on Linux, macOS, Windows, etc.
+devices on Haiku, Linux, macOS, Windows, etc.
 
 - user-mode: No special privilege or elevation is required for the \
 application to communicate with a device.
