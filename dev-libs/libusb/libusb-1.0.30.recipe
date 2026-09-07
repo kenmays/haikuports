@@ -12,7 +12,7 @@ application to communicate with a device.
 - version-agnostic: All versions of the USB protocol, from 1.0 to USB 3.2 \
 and USB 4.0, are supported."
 HOMEPAGE="https://libusb.info"
-COPYRIGHT="2007-2025 The libusb developers"
+COPYRIGHT="2007-2026 The libusb developers"
 LICENSE="GNU LGPL v2.1"
 REVISION="1"
 SOURCE_URI="https://github.com/libusb/libusb/archive/v$portVersion.tar.gz"
