@@ -4,12 +4,12 @@ Features user-to-user chat, group chat, transports, etc, in a clean and easy \
 to use user interface."
 HOMEPAGE="https://pulkomandy.tk/projects/renga"
 COPYRIGHT="199?-2009 John Blanco, Frank Paul Silye, Andrea Anzani, Daniel Fischer, zuMi
-	2008-2025 HaikuArchives Team, Adrien Destugues, Pascal Abresch"
+	2008-2026 HaikuArchives Team, Adrien Destugues, Pascal Abresch"
 LICENSE="MIT"
-REVISION="3"
+REVISION="1"
 SOURCE_URI="https://pulkomandy.tk/downloads/Renga-v$portVersion.tar.gz"
 SOURCE_DIR="Renga-v$portVersion"
-CHECKSUM_SHA256="5c1a9877395a8659fd3f1364a795049721c3b688b4ea4a1f11e2d76385eba540"
+CHECKSUM_SHA256="16df42eb4f76400f27deadc8999f165b7257b49adc300488508e0f69581d8134"
 
 ARCHITECTURES="all !x86_gcc2"
 SECONDARY_ARCHITECTURES="x86"
@@ -44,7 +44,8 @@ BUILD_PREREQUIRES="
 BUILD()
 {
 	mkdir -p build && cd build
-	cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_DOCDIR=$docDir
+	# Built in debug because the code uses asserts and doesn't build if they are disabled.
+	cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_DOCDIR=$docDir
 	make $jobArgs
 }
 
