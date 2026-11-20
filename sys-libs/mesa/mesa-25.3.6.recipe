@@ -69,7 +69,7 @@ REQUIRES_lavapipe="
 # libglvnd.so and mesa 22.x provides our devel:libGL
 BUILD_REQUIRES="
 	haiku${secondaryArchSuffix}_devel
-	libglvnd${secondaryArchSuffix}_devel
+	libglvnd${secondaryArchSuffix}_devel >= 1.7.0
 	devel:libz$secondaryArchSuffix
 	devel:libLLVM$secondaryArchSuffix >= $llvmMajor
 	devel:libexpat$secondaryArchSuffix
@@ -110,7 +110,8 @@ BUILD()
 	# drivers so libEGL_mesa contains other drivers in addition
 	# to llvm swpipe.
 	meson build \
-		-Degl=enabled -Dglvnd=enabled -Dglx=disabled -Dplatforms=haiku \
+		-Degl=enabled -Degl-native-platform=haiku -Dglvnd=enabled \
+		-Dglx=disabled -Dplatforms=haiku -Dgles1=disabled -Dgles2=disabled \
 		-Dgallium-rusticl=false \
 		-Dgallium-drivers=llvmpipe \
 		-Dvulkan-drivers=swrast \
